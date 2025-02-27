@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CodeEditText">
+        <attr name="strokeHeight" format="dimension" />
+        <attr name="strokeWidth" format="dimension" />
+        <attr name="strokePadding" format="dimension" />
+        <attr name="strokeBackground" format="reference" />
+        <attr name="strokeLength" format="integer" />
+    </declare-styleable>
+</resources>

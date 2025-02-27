@@ -58,12 +58,12 @@
                     android:orientation="horizontal"
                     android:paddingVertical="10dp">
 
-                    <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:layout_marginVertical="5dp"
-                        android:layout_marginLeft="14dp"
-                        android:src="@drawable/mima" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="26dp"-->
+<!--                        android:layout_height="26dp"-->
+<!--                        android:layout_marginVertical="5dp"-->
+<!--                        android:layout_marginLeft="14dp"-->
+<!--                        android:src="@drawable/mima" />-->
 
                     <EditText
                         android:id="@+id/account_security_old_password"
@@ -86,12 +86,12 @@
                     android:orientation="horizontal"
                     android:paddingVertical="10dp">
 
-                    <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:layout_marginVertical="5dp"
-                        android:layout_marginLeft="14dp"
-                        android:src="@drawable/mima" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="26dp"-->
+<!--                        android:layout_height="26dp"-->
+<!--                        android:layout_marginVertical="5dp"-->
+<!--                        android:layout_marginLeft="14dp"-->
+<!--                        android:src="@drawable/mima" />-->
 
                     <EditText
                         android:id="@+id/account_security_fr_password"
@@ -116,12 +116,12 @@
                     android:orientation="horizontal"
                     android:paddingVertical="10dp">
 
-                    <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:layout_marginVertical="5dp"
-                        android:layout_marginLeft="14dp"
-                        android:src="@drawable/mima" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="26dp"-->
+<!--                        android:layout_height="26dp"-->
+<!--                        android:layout_marginVertical="5dp"-->
+<!--                        android:layout_marginLeft="14dp"-->
+<!--                        android:src="@drawable/mima" />-->
 
                     <EditText
                         android:id="@+id/account_security_se_password"

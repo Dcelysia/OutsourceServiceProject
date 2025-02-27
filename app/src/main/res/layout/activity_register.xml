@@ -13,61 +13,108 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="50dp"
-            android:src="@drawable/logo" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:paddingVertical="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="5dp"
+                android:text="Audio"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:src="@drawable/splash_logo_black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="160dp"
+                android:text="条款"
+                android:textColor="#949494" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:text="隐私政策"
+                android:textColor="#949494" />
+        </LinearLayout>
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="创建您的账户"
+            android:layout_gravity="start"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="60dp"
+            android:text="创建账户"
             android:textColor="@color/text_color"
-            android:textSize="23sp" />
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="35dp"
+            android:text="姓名"
+            android:textColor="@color/text_color"
+            android:textSize="19sp" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/edit_text_drawable"
-            android:paddingVertical="10dp">
+            android:paddingVertical="8dp">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginVertical="5dp"
-                android:layout_marginLeft="14dp"
-                android:src="@drawable/yonghu" />
 
             <EditText
                 android:id="@+id/register_edit_account"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@null"
-                android:hint="请输入用户名"
+                android:hint="请输入您的姓名"
+                android:paddingVertical="4dp"
                 android:paddingStart="12dp" />
         </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="25dp"
+            android:text="电子邮箱"
+            android:textColor="@color/text_color"
+            android:textSize="19sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/edit_text_drawable"
             android:orientation="horizontal"
-            android:paddingVertical="10dp">
-
-            <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:layout_marginVertical="5dp"
-                android:layout_marginLeft="14dp"
-                android:src="@drawable/mima" />
+            android:paddingVertical="8dp">
 
             <EditText
                 android:id="@+id/register_edit_password1"
@@ -75,36 +122,32 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@null"
-                android:hint="请输入密码"
+                android:hint="请输入您的电子邮箱"
                 android:inputType="textPassword"
+                android:paddingVertical="4dp"
                 android:paddingStart="12dp" />
-
-            <ImageView
-                android:id="@+id/register_password1_visible"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:layout_marginVertical="5dp"
-                android:layout_marginRight="11dp"
-                android:src="@drawable/biyan" />
 
         </LinearLayout>
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="25dp"
+            android:text="密码"
+            android:textColor="@color/text_color"
+            android:textSize="19sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/edit_text_drawable"
             android:orientation="horizontal"
-            android:paddingVertical="10dp">
-
-            <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:layout_marginVertical="5dp"
-                android:layout_marginLeft="14dp"
-                android:src="@drawable/mima" />
+            android:paddingVertical="7dp">
 
             <EditText
                 android:id="@+id/register_edit_password2"
@@ -112,8 +155,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@null"
-                android:hint="请确认密码"
+                android:hint="请输入您的密码"
                 android:inputType="textPassword"
+                android:paddingVertical="4dp"
                 android:paddingStart="12dp" />
 
             <ImageView
@@ -136,77 +180,17 @@
             android:background="@drawable/gradient_disable_button"
             android:backgroundTint="@null"
             android:gravity="center"
-            android:paddingVertical="12dp"
-            android:text="注册"
+            android:paddingVertical="16dp"
+            android:text="创建一个账户"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="27dp"
-
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/register_agree_plan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:button="@drawable/checkbox_drawbale" />
-
-            <Space
-                android:layout_width="6dp"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="4dp"
-                android:gravity="center"
-                android:text="我已阅读并同意"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/register_user_plan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="4dp"
-                android:gravity="center"
-                android:text="《用户协议》"
-                android:textColor="@color/blue"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="4dp"
-                android:gravity="center"
-                android:text="和"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/register_primary_plan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="4dp"
-                android:gravity="center"
-                android:text="《隐私政策》"
-                android:textColor="@color/blue"
-                android:textSize="16sp" />
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="200dp"
             android:orientation="horizontal">
 
             <TextView
@@ -228,6 +212,17 @@
                 android:textColor="@color/blue"
                 android:textSize="17sp" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:text="注册即表示您同意我们的条款和隐私政策"
+            android:textColor="#949494"
+            android:textSize="17sp" />
     </LinearLayout>
 
     <FrameLayout

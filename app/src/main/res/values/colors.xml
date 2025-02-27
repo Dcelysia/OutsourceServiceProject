@@ -9,4 +9,7 @@
     <color name="text_color">#333333</color>
     <color name="blue">#2D74F3</color>
     <color name="normal_background">#F5F7F9</color>
+
+    <color name="light_gray">#F3F4F6</color>
+    <color name="light_gray_border">#E5E7EB</color>
 </resources>

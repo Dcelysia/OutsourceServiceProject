@@ -21,10 +21,8 @@ import com.dcelysia.outsourceserviceproject.core.Route
 import com.dcelysia.outsourceserviceproject.Network.Resource
 import com.dcelysia.outsourceserviceproject.R
 import com.dcelysia.outsourceserviceproject.UI.CustomToast
-import com.dcelysia.outsourceserviceproject.Utils.CommonConst
 import com.dcelysia.outsourceserviceproject.Utils.mmkv.LoginInfoManager
 import com.dcelysia.outsourceserviceproject.ViewModel.LoginViewModel
-import com.dcelysia.outsourceserviceproject.core.MainApplication
 import com.dcelysia.outsourceserviceproject.databinding.ActivityLoginBinding
 import kotlinx.coroutines.launch
 

@@ -7,11 +7,23 @@ import com.dcelysia.outsourceserviceproject.Activity.LoginActivity
 import com.dcelysia.outsourceserviceproject.Activity.MainActivity
 import com.dcelysia.outsourceserviceproject.Activity.PersonProfileActivity
 import com.dcelysia.outsourceserviceproject.Activity.RegisterActivity
+import com.dcelysia.outsourceserviceproject.Activity.SubscriptionActivity
+import com.dcelysia.outsourceserviceproject.Activity.VerificationCodeActivity
 
 object Route {
 
     fun goAccountSecurity(context: Context) {
         val intent = Intent(context, AccountSecurityActivity::class.java)
+        context.startActivity(intent)
+    }
+
+    fun goVerificationCodeActivity(context: Context) {
+        val intent = Intent(context, VerificationCodeActivity::class.java)
+        context.startActivity(intent)
+    }
+
+    fun goSubscriptionActivity(context: Context) {
+        val intent = Intent(context, SubscriptionActivity::class.java)
         context.startActivity(intent)
     }
 

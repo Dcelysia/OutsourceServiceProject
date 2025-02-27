@@ -37,10 +37,7 @@ class RegisterActivity : AppCompatActivity() {
     private val registerEditAccount: EditText by lazy { binding.registerEditAccount }
     private val registerEditPassword1: EditText by lazy { binding.registerEditPassword1 }
     private val registerEditPassword2: EditText by lazy { binding.registerEditPassword2 }
-
-    private val registerPassword1Visible: ImageView by lazy { binding.registerPassword1Visible }
     private val registerPassword2Visible: ImageView by lazy { binding.registerPassword2Visible }
-    private val registerAgreePlan by lazy { binding.registerAgreePlan }
     private val register by lazy { binding.registerButton }
     private val registerBack by lazy { binding.registerBackLogin }
     private val overlay by lazy { binding.registerLoadingOverlay }
@@ -61,7 +58,6 @@ class RegisterActivity : AppCompatActivity() {
 
         setAccount()
         setPasswordEdit()
-        setIsAgree()
         setVisiblePassword()
         observeViewModel()
 
@@ -77,19 +73,9 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun setVisiblePassword() {
-        registerPassword1Visible.setOnClickListener {
-            isVisible1 = !isVisible1
-            viewModel.updatePassword1Visible(isVisible1)
-        }
         registerPassword2Visible.setOnClickListener {
             isVisible2 = !isVisible2
             viewModel.updatePassword2Visible(isVisible2)
-        }
-    }
-
-    private fun setIsAgree() {
-        registerAgreePlan.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.updateAgree(isChecked)
         }
     }
 
@@ -121,20 +107,6 @@ class RegisterActivity : AppCompatActivity() {
                             else R.drawable.gradient_disable_button
                         )
                         register.isEnabled = isEnabled
-                    }
-                }
-                launch {
-                    viewModel.isPassword1Visible.collect { isVisible1 ->
-                        if (isVisible1) {
-                            registerEditPassword1.inputType =
-                                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                            registerPassword1Visible.setImageResource(R.drawable.zhengyan)
-                        } else {
-                            registerEditPassword1.inputType =
-                                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                            registerPassword1Visible.setImageResource(R.drawable.biyan)
-                        }
-                        registerEditPassword1.setSelection(registerEditPassword1.text.length)
                     }
                 }
 

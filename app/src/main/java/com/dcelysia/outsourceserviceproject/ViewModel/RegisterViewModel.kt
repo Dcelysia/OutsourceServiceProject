@@ -21,13 +21,10 @@ class RegisterViewModel : ViewModel() {
     private val _password1 = MutableStateFlow("")
     private val _password2 = MutableStateFlow("")
 
-    private val _isAgreed = MutableStateFlow(false)
-    private val _isPassword1Visible = MutableStateFlow(false)
     private val _isPassword2Visible = MutableStateFlow(false)
     private val _isRegisterEnabled = MutableStateFlow(false)
 
     val isRegisterEnabled = _isRegisterEnabled.asStateFlow()
-    val isPassword1Visible = _isPassword1Visible.asStateFlow()
     val isPassword2Visible = _isPassword2Visible.asStateFlow()
 
     private val _registerState = MutableSharedFlow<Resource<LoginAndRegisterResponse>?>(
@@ -51,14 +48,6 @@ class RegisterViewModel : ViewModel() {
         checkIsEnabled()
     }
 
-    fun updateAgree(isAgree: Boolean) {
-        _isAgreed.value = isAgree
-        checkIsEnabled()
-    }
-
-    fun updatePassword1Visible(isVisible: Boolean) {
-        _isPassword1Visible.value = isVisible
-    }
 
     fun updatePassword2Visible(isVisible: Boolean) {
         _isPassword2Visible.value = isVisible
@@ -67,7 +56,6 @@ class RegisterViewModel : ViewModel() {
     fun checkIsEnabled() {
         _isRegisterEnabled.value =
             _account.value.isNotEmpty() && _password1.value.isNotEmpty() && _password2.value.isNotEmpty()
-                    && _isAgreed.value
     }
 
     fun register() {
@@ -75,13 +63,13 @@ class RegisterViewModel : ViewModel() {
             Log.d(TAG, "进入")
             _registerState.emit(Resource.Loading())
             Log.d(TAG, "更改状态")
-            if(!_password1.value.equals(_password2.value)) {
+            if (!_password1.value.equals(_password2.value)) {
                 _registerState.emit(Resource.Error("两次输入的密码不相同"))
                 return@launch
             }
             Log.d(TAG, "第二阶段")
             Thread.sleep(300)
-           // _registerState.value =
+            // _registerState.value =
 //            _registerState.emit(Resource.Success(LoginAndRegisterResponse("200", "ok", null)))
             _registerState.emit(repository.register(_account.value, _password1.value))
         }
