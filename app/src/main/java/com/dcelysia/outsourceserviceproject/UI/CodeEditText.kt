@@ -137,6 +137,7 @@ class CodeEditText @JvmOverloads constructor(
             canvas.save()
             canvas.translate(dx.toFloat(), 0f)
         }
+
         canvas.restoreToCount(count)
         canvas.translate(0f, 0f)
 

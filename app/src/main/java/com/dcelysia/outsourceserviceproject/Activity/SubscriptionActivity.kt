@@ -53,10 +53,10 @@ class SubscriptionActivity : AppCompatActivity() {
 
     private fun showMonthlyPlan() {
         // Update tab appearance
-        monthlyTab.background = ContextCompat.getDrawable(this, R.drawable.tab_selected_background)
+        monthlyTab.background = ContextCompat.getDrawable(this, R.drawable.tab_selected)
         monthlyTab.setTextColor(ContextCompat.getColor(this, R.color.white))
 
-        yearlyTab.background = ContextCompat.getDrawable(this, R.drawable.tab_unselected_background)
+        yearlyTab.background = ContextCompat.getDrawable(this, R.drawable.tab_unselected)
         yearlyTab.setTextColor(ContextCompat.getColor(this, R.color.black))
 
         // Show monthly plan content
@@ -65,10 +65,10 @@ class SubscriptionActivity : AppCompatActivity() {
 
     private fun showYearlyPlan() {
         // Update tab appearance
-        yearlyTab.background = ContextCompat.getDrawable(this, R.drawable.tab_selected_background)
+        yearlyTab.background = ContextCompat.getDrawable(this, R.drawable.tab_selected)
         yearlyTab.setTextColor(ContextCompat.getColor(this, R.color.white))
 
-        monthlyTab.background = ContextCompat.getDrawable(this, R.drawable.tab_unselected_background)
+        monthlyTab.background = ContextCompat.getDrawable(this, R.drawable.tab_unselected)
         monthlyTab.setTextColor(ContextCompat.getColor(this, R.color.black))
 
         // Show yearly plan content

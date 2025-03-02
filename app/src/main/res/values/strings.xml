@@ -26,4 +26,16 @@
     <string name="feature_more_storage">存储空间更大</string>
     <string name="feature_24h_support">24h全程线上客户支持</string>
     <string name="feature_priority_access">新功能优先体验</string>
+    <string name="audio_name">AI Audio Converter</string>
+    <string name="ai_audio_converter">AI 智能变声器</string>
+    <string name="upload_file">上传文件</string>
+    <string name="record">录音</string>
+    <string name="upload_instruction">上传您的音频文件以使用AI 智能变声器进行变声处理。\n支持的格式包括 MP3、WAV 和 AAC，最大\n文件大小为100MB，以获得最佳性能。</string>
+    <string name="upload_audio_file">上传音频文件</string>
+    <string name="home">首页</string>
+    <string name="audio">音频</string>
+    <string name="converter">变声器</string>
+    <string name="stats">统计</string>
+    <string name="profile">我的</string>
+
 </resources>

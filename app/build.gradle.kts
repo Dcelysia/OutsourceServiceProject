@@ -72,6 +72,10 @@ dependencies {
     implementation("com.github.zfman:TimetableView:2.0.7")
     // 图片裁剪库
     implementation("com.github.Yalantis:uCrop:2.2.8")
+//
+    // navigation
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
 
 
     implementation(libs.androidx.core.ktx)
