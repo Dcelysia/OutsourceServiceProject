@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+  <!-- 中心的原子核 -->
+  <path
+      android:pathData="M12,12m-2.05,0a2.05,2.05 0,1 1,4.1 0a2.05,2.05 0,1 1,-4.1 0"
+      android:fillColor="@color/white"/>
+
+  <!-- 水平轨道 -->
+  <path
+      android:pathData="M1,12a11,4.2 0,1 0,22 0a11,4.2 0,1 0,-22 0z"
+      android:strokeWidth="1"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/white"/>
+
+  <!-- 旋转60度的轨道 -->
+  <path
+      android:pathData="M6.5,2.47a11,4.2 60,1 0,11 19.053a11,4.2 60,1 0,-11 -19.053z"
+      android:strokeWidth="1"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/white"/>
+
+  <!-- 旋转120度的轨道 -->
+  <path
+      android:pathData="M17.5,2.47a11,4.2 120,1 0,-11 19.053a11,4.2 120,1 0,11 -19.053z"
+      android:strokeWidth="1"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/white"/>
+</vector>
