@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.dcelysia.outsourceserviceproject.Fragment.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/storeFragment"
+        android:name="com.dcelysia.outsourceserviceproject.Fragment.StoreFragment"
+        android:label="fragment_store"
+        tools:layout="@layout/fragment_store" />
+    <fragment
+        android:id="@+id/mineFragment"
+        android:name="com.dcelysia.outsourceserviceproject.Fragment.MineFragment"
+        android:label="MineFragment" />
+    <fragment
+        android:id="@+id/audioConverterFragment"
+        android:name="com.dcelysia.outsourceserviceproject.Fragment.AudioConverterFragment"
+        android:label="AudioConverterFragment" />
+    <fragment
+        android:id="@+id/synthesisFragment"
+        android:name="com.dcelysia.outsourceserviceproject.Fragment.SynthesisFragment"
+        android:label="fragment_synthesis"
+        tools:layout="@layout/fragment_synthesis" />
+</navigation>

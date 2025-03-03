@@ -17,5 +17,37 @@
     <string name="voice_info">AI声音描述</string>
     <string name="voice_info_subline">声音详细描述文本</string>
     <string name="voice_duration">0:00</string>
+    <string name="back">Back</string>
+    <string name="input_verification_code">输入验证码</string>
+    <string name="verification_code_sent_to_email">我们刚刚通过您的电子邮件</string>
+    <string name="continue_text">继续</string>
+    <string name="no_code_resend">没有收到验证码? 重新发送验证码</string>
+    <string name="please_enter_verification_code">Please enter the verification code</string>
+    <string name="verification_code_resent">Verification code has been resent</string>
+    <string name="upgrade_plan">升级计划</string>
+    <string name="monthly">每月</string>
+    <string name="yearly">每年</string>
+    <string name="premium_plan">升级高级计划</string>
+    <string name="monthly_price">¥ 25.9/月</string>
+    <string name="yearly_price">¥ 188/年</string>
+    <string name="pay_monthly">支付 - ¥ 25.9</string>
+    <string name="pay_yearly">支付 - ¥ 188</string>
+    <string name="feature_no_ads">纯净无广告体验</string>
+    <string name="feature_unlimited_ai">无限制访问所有人工智能助手</string>
+    <string name="feature_faster_response">响应速度更快</string>
+    <string name="feature_more_storage">存储空间更大</string>
+    <string name="feature_24h_support">24h全程线上客户支持</string>
+    <string name="feature_priority_access">新功能优先体验</string>
+    <string name="audio_name">AI Audio Converter</string>
+    <string name="ai_audio_converter">AI 智能变声器</string>
+    <string name="upload_file">上传文件</string>
+    <string name="record">录音</string>
+    <string name="upload_instruction">上传您的音频文件以使用AI 智能变声器进行变声处理。\n支持的格式包括 MP3、WAV 和 AAC，最大\n文件大小为100MB，以获得最佳性能。</string>
+    <string name="upload_audio_file">上传音频文件</string>
+    <string name="home">首页</string>
+    <string name="audio">音频</string>
+    <string name="converter">变声器</string>
+    <string name="stats">统计</string>
+    <string name="profile">我的</string>
 
 </resources>

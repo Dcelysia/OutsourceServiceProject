@@ -35,13 +35,13 @@ class MineFragment : Fragment() {
     // TODO: Rename and change types of parameters
 
     private lateinit var binding: FragmentMineBinding
-    private val mineAvatar by lazy { binding.mineAvatar }
-    private val mineAccount by lazy { binding.mineAccount }
-    private val topMineConfig by lazy { binding.topMineConfig }
-    private val topUserConfig by lazy { binding.topMineConfig }
+//    private val mineAvatar by lazy { binding.mineAvatar }
+//    private val mineAccount by lazy { binding.mineAccount }
+//    private val topMineConfig by lazy { binding.topMineConfig }
+//    private val topUserConfig by lazy { binding.topMineConfig }
     private val viewModel by lazy { MineViewModel() }
 
-    private val accountSecurity by lazy { binding.accountSecurity }
+//    private val accountSecurity by lazy { binding.accountSecurity }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,43 +59,43 @@ class MineFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentMineBinding.inflate(layoutInflater, container, false)
-        topUserConfig.setOnClickListener {
-            Route.goPersonProfile(requireContext())
-        }
-        mineAvatar.setOnClickListener { Route.goPersonProfile(requireContext()) }
-        accountSecurity.setOnClickListener { Route.goAccountSecurity(requireContext()) }
-        observeUserInfo()
+//        topUserConfig.setOnClickListener {
+//            Route.goPersonProfile(requireContext())
+//        }
+//        mineAvatar.setOnClickListener { Route.goPersonProfile(requireContext()) }
+//        accountSecurity.setOnClickListener { Route.goAccountSecurity(requireContext()) }
+//        observeUserInfo()
         return binding.root
     }
 
-    private fun observeUserInfo() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.baseUserProfile.collect { response ->
-                        when (response) {
-                            is Resource.Success -> {
-                                val baseUserProfile = response.data
-                                mineAccount.text = baseUserProfile.account
-                                Glide.with(this@MineFragment)
-                                    .load(baseUserProfile.avatarUrl)
-                                    .into(mineAvatar)
-                            }
-
-                            is Resource.Error -> {
-                                CustomToast.showMessage(
-                                    requireContext(),
-                                    "出错啦, ${response.message} + ${MainApplication.token}"
-                                )
-                            }
-
-                            else -> {}
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    private fun observeUserInfo() {
+//        lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                launch {
+//                    viewModel.baseUserProfile.collect { response ->
+//                        when (response) {
+//                            is Resource.Success -> {
+//                                val baseUserProfile = response.data
+//                                mineAccount.text = baseUserProfile.account
+//                                Glide.with(this@MineFragment)
+//                                    .load(baseUserProfile.avatarUrl)
+//                                    .into(mineAvatar)
+//                            }
+//
+//                            is Resource.Error -> {
+//                                CustomToast.showMessage(
+//                                    requireContext(),
+//                                    "出错啦, ${response.message} + ${MainApplication.token}"
+//                                )
+//                            }
+//
+//                            else -> {}
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     companion object {
         /**

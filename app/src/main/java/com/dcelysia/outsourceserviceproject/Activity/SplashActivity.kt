@@ -23,9 +23,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.Response
 
 class SplashActivity : AppCompatActivity() {
-    private val username by lazy { LoginInfoManager.cacheUsername }
-    private val password by lazy { LoginInfoManager.cachePassword }
-    private val loginRepository by lazy { LoginAndRegisterRepository() }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -36,33 +33,16 @@ class SplashActivity : AppCompatActivity() {
             insets
         }
         lifecycleScope.launch {
-            delay(400)
+            delay(500)
+//            if (MainApplication.token == null) {
+//                Route.goLogin(this@SplashActivity)
+//            } else {
+//                Route.goHome(this@SplashActivity)
+//            }
+//            Route.goVerificationCodeActivity(this@SplashActivity)
+//            Route.goLogin(this@SplashActivity)
+//            Route.goSubscriptionActivity(this@SplashActivity)
             Route.goHome(this@SplashActivity)
-//            autoLogin()
-        }
-    }
-    private suspend fun autoLogin() {
-        try {
-            if (username.isEmpty() || password.isEmpty()) {
-                Route.goLogin(this@SplashActivity)
-                finish()
-                return
-            }
-            withContext(Dispatchers.IO) {
-                val response = loginRepository.login(
-                    username, password
-                )
-                when (response) {
-                    is Resource.Success -> {
-                        Route.goHome(this@SplashActivity)
-                    }
-                    else -> {
-                        Route.goLogin(this@SplashActivity)
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            Route.goLogin(this@SplashActivity)
             finish()
         }
     }
