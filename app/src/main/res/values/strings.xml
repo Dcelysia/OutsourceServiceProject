@@ -2,9 +2,21 @@
     <string name="app_name">OutsourceServiceProject</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
-
-    <!-- Verification Code Screen -->
+    <string name="good_morning">早上好</string>
+    <string name="good_afternoon">中午好</string>
+    <string name="good_evening">晚上好</string>
+    <string name="greeting">让我们看看能帮您做些什么?</string>
+    <string name="voice_generation">AI 智能合成</string>
+    <string name="voice_generation_subline">AI 快速成就自信声音</string>
+    <string name="text_to_voice">AI 智能文本转换</string>
+    <string name="text_to_voice_subline">将文本转换为自然语音</string>
+    <string name="generation_start">开始创作</string>
+    <string name="PPT_to_voice">人工智能PPT讲解</string>
+    <string name="PPT_to_voice_subline">AI 一键讲解PPT</string>
+    <string name="voice_recommended">推荐声音</string>
+    <string name="voice_info">AI声音描述</string>
+    <string name="voice_info_subline">声音详细描述文本</string>
+    <string name="voice_duration">0:00</string>
     <string name="back">Back</string>
     <string name="input_verification_code">输入验证码</string>
     <string name="verification_code_sent_to_email">我们刚刚通过您的电子邮件</string>
