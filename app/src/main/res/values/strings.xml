@@ -49,5 +49,6 @@
     <string name="converter">变声器</string>
     <string name="stats">统计</string>
     <string name="profile">我的</string>
+    <string name="models_choice">声音选择</string>
 
 </resources>

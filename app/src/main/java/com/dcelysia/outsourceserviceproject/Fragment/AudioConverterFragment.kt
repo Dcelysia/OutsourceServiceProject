@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
 
 class AudioConverterFragment : Fragment() {
@@ -44,7 +45,7 @@ class AudioConverterFragment : Fragment() {
     private fun setupListeners() {
         // 返回按钮点击
         btnBack.setOnClickListener {
-            activity?.onBackPressed()
+            findNavController().popBackStack()
         }
 
         // 上传按钮点击

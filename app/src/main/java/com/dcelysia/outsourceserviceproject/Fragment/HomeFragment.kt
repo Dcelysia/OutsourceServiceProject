@@ -138,6 +138,29 @@ class HomeFragment : Fragment() {
             )
         )
 
+        voiceItems.add(
+            VoiceItem(
+                id = 3,
+                title = "芙宁娜",
+                description = "希望你喜欢这五百年属于你的戏份",
+                duration = "0:05",
+                avatarResId = R.drawable.funingna,
+                wavFile = R.raw.test,
+                isPlaying = false
+            )
+        )
+
+        voiceItems.add(
+            VoiceItem(
+                id = 3,
+                title = "派蒙",
+                description = "最好的伙伴",
+                duration = "0:05",
+                avatarResId = R.drawable.paimeng,
+                wavFile = R.raw.test,
+                isPlaying = false
+            )
+        )
     }
 
     private fun onVoiceItemPlayPauseClick(
@@ -155,6 +178,11 @@ class HomeFragment : Fragment() {
             currentPlayingPosition = position
             voiceItems[currentPlayingPosition].isPlaying = true
             voiceAdapter.updatePlayState(currentPlayingPosition)
+
+            mediaPlayer.setOnCompletionListener {
+                voiceItems[currentPlayingPosition].isPlaying = false
+                voiceAdapter.updatePlayState(currentPlayingPosition)
+            }
 
             val afd = requireContext().resources.openRawResourceFd(voiceItems[position].wavFile)
             mediaPlayer.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)

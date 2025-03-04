@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.dcelysia.outsourceserviceproject.R
 import com.dcelysia.outsourceserviceproject.databinding.FragmentVoiceSynthesisBinding
 import java.io.IOException
@@ -20,8 +21,7 @@ import java.util.concurrent.TimeUnit
 
 class VoiceSynthesisFragment : Fragment() {
 
-    private var _binding: FragmentVoiceSynthesisBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentVoiceSynthesisBinding
 
     private val voiceModels = arrayOf(
         "女声 - 自然温柔",
@@ -68,7 +68,7 @@ class VoiceSynthesisFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentVoiceSynthesisBinding.inflate(inflater, container, false)
+        binding = FragmentVoiceSynthesisBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -80,6 +80,9 @@ class VoiceSynthesisFragment : Fragment() {
         setupPlayerControls()
         setupSynthesizeButton()
         setupSettingsButton()
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 
 
@@ -282,6 +285,5 @@ class VoiceSynthesisFragment : Fragment() {
         super.onDestroy()
         handler.removeCallbacks(updateProgressAction)
         releaseMediaPlayer()
-        _binding = null
     }
 }

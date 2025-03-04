@@ -14,11 +14,18 @@
             android:id="@+id/action_homeFragment_to_voiceSynthesisFragment"
             app:destination="@id/voiceSynthesisFragment"
             app:enterAnim="@anim/fade_in"
-            app:popEnterAnim="@anim/fade_out"/>
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_homeFragment_to_audioConverterFragment"
-            app:destination="@id/audioConverterFragment" />
+            app:destination="@id/audioConverterFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
+
     <fragment
         android:id="@+id/storeFragment"
         android:name="com.dcelysia.outsourceserviceproject.Fragment.StoreFragment"
