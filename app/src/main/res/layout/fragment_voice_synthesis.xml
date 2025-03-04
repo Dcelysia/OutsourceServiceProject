@@ -50,6 +50,7 @@
         android:text="选择声音模型"
         android:textColor="?attr/colorOnSurface"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider" />
 
@@ -70,8 +71,6 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="#F1F2F4"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
             android:spinnerMode="dropdown" />
     </androidx.cardview.widget.CardView>
 
@@ -84,6 +83,7 @@
         android:text="语速调节"
         android:textColor="?attr/colorOnSurface"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/voiceModelCardView" />
 
@@ -122,6 +122,7 @@
         android:text="输入文本"
         android:textColor="?attr/colorOnSurface"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/speechRateSeekBar" />
 
@@ -148,7 +149,7 @@
             android:inputType="textMultiLine"
             android:padding="16dp"
             android:textColor="?attr/colorOnSurface"
-            android:textColorHint="?attr/colorOnSurfaceVariant"
+            android:textColorHint="#9299A4"
             android:textSize="16sp" />
     </androidx.cardview.widget.CardView>
 
@@ -157,7 +158,7 @@
         android:id="@+id/playerCardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         app:cardBackgroundColor="?attr/colorSurfaceVariant"
         app:cardCornerRadius="8dp"
         app:cardElevation="0dp"
@@ -176,6 +177,7 @@
                 style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                app:backgroundTint="#000000"
                 app:cornerRadius="25dp"
                 app:icon="@drawable/ic_play"
                 app:iconGravity="textStart"
@@ -191,15 +193,17 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="8dp"
-                app:backgroundTint="?attr/colorSurfaceContainerHigh"
+                app:backgroundTint="#F1F2F4"
                 app:cornerRadius="25dp"
                 app:icon="@drawable/ic_stop"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"
                 app:iconSize="20dp"
-                app:iconTint="?attr/colorOnSurfaceVariant"
+                app:iconTint="#434C57"
                 app:layout_constraintStart_toEndOf="@id/playButton"
-                app:layout_constraintTop_toTopOf="@id/playButton" />
+                app:layout_constraintTop_toTopOf="@id/playButton"
+                app:strokeColor="#CBCFD5"
+                app:strokeWidth="1dp" />
 
             <TextView
                 android:id="@+id/timeTextView"
@@ -254,7 +258,7 @@
         android:id="@+id/loadingProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/synthesizeButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

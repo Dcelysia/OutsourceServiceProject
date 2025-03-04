@@ -31,7 +31,24 @@ class VoiceSynthesisFragment : Fragment() {
         "儿童声音"
     )
 
-    private val speechRates = arrayOf(0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f, 1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 2.0f)
+    private val speechRates = arrayOf(
+        0.5f,
+        0.6f,
+        0.7f,
+        0.8f,
+        0.9f,
+        1.0f,
+        1.1f,
+        1.2f,
+        1.3f,
+        1.4f,
+        1.5f,
+        1.6f,
+        1.7f,
+        1.8f,
+        1.9f,
+        2.0f
+    )
     private var currentSpeechRateIndex = 5 // 1.0f is the default
 
     private var mediaPlayer: MediaPlayer? = null
@@ -44,7 +61,6 @@ class VoiceSynthesisFragment : Fragment() {
         }
     }
 
-    // Maximum audio duration in milliseconds (01:30 = 90 seconds = 90000 milliseconds)
     private val maxDuration = 90000L
 
     override fun onCreateView(
@@ -66,17 +82,18 @@ class VoiceSynthesisFragment : Fragment() {
         setupSettingsButton()
     }
 
+
     private fun setupVoiceModelSpinner() {
         val adapter = ArrayAdapter(
             requireContext(),
-            android.R.layout.simple_spinner_item,
+            R.layout.spinner_text_item,
             voiceModels
         ).apply {
-            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            setDropDownViewResource(R.layout.spinner_text_item)
         }
 
         binding.voiceModelSpinner.adapter = adapter
-        binding.voiceModelSpinner.setSelection(0) // Default to first option
+        binding.voiceModelSpinner.setSelection(0)
     }
 
     private fun setupSpeechRateSeekBar() {
@@ -84,7 +101,8 @@ class VoiceSynthesisFragment : Fragment() {
         binding.speechRateSeekBar.progress = 50
         binding.speechRateValueText.text = "1.0x"
 
-        binding.speechRateSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        binding.speechRateSeekBar.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 // Map progress (0-100) to our speechRates array index
                 val index = (progress * (speechRates.size - 1) / 100.0f).toInt()
@@ -115,7 +133,8 @@ class VoiceSynthesisFragment : Fragment() {
         binding.synthesizeButton.setOnClickListener {
             val text = binding.textInputEditText.text.toString().trim()
             if (text.isEmpty()) {
-                Toast.makeText(requireContext(), "请输入要合成的文本内容", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "请输入要合成的文本内容", Toast.LENGTH_SHORT)
+                    .show()
                 return@setOnClickListener
             }
 
@@ -175,7 +194,11 @@ class VoiceSynthesisFragment : Fragment() {
                     stopPlayback()
                 }
             } catch (e: IOException) {
-                Toast.makeText(requireContext(), "Failed to prepare media player", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Failed to prepare media player",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

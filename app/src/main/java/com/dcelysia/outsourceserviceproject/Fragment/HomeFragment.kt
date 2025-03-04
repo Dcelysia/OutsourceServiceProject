@@ -1,32 +1,41 @@
 package com.dcelysia.outsourceserviceproject.Fragment
 
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dcelysia.outsourceserviceproject.Model.data.response.VoiceItem
 import com.dcelysia.outsourceserviceproject.R
+import com.dcelysia.outsourceserviceproject.Utils.AudioPlayerHelper
 import com.dcelysia.outsourceserviceproject.adapter.RecommendedVoiceAdapter
 import com.dcelysia.outsourceserviceproject.databinding.FragmentHomeBinding
+import java.util.concurrent.TimeUnit
 
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var voiceAdapter: RecommendedVoiceAdapter
     private val voiceItems = mutableListOf<VoiceItem>()
+    private val handler = Handler(Looper.getMainLooper())
+    private var progressUpdateRunnable: Runnable? = null
+    private var currentPlayingPosition: Int = -1
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
+    private val mediaPlayer: MediaPlayer by lazy { MediaPlayer() }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -60,12 +69,14 @@ class HomeFragment : Fragment() {
     private fun setupFeatureCards() {
         // Setup AI Voice Changer card
         binding.cardVoiceChanger.setOnClickListener {
-            Toast.makeText(context, "AI 智能变声", Toast.LENGTH_SHORT).show()
+            val controller = Navigation.findNavController(it)
+            controller.navigate(R.id.action_homeFragment_to_audioConverterFragment)
         }
 
         // Setup AI Text-to-Speech card
         binding.cardTextToSpeech.setOnClickListener {
-            Toast.makeText(context, "AI 智能文本转换", Toast.LENGTH_SHORT).show()
+            val controller = Navigation.findNavController(it)
+            controller.navigate(R.id.action_homeFragment_to_voiceSynthesisFragment)
         }
 
     }
@@ -78,7 +89,7 @@ class HomeFragment : Fragment() {
         binding.btnUpgradePlan.setOnClickListener {
             Toast.makeText(context, "升级到高级计划", Toast.LENGTH_SHORT).show()
             // Navigate to premium plan details
-            // navigateToPremiumPlan()
+//             navigateToPremiumPlan()
         }
     }
 
@@ -106,10 +117,11 @@ class HomeFragment : Fragment() {
         voiceItems.add(
             VoiceItem(
                 id = 1,
-                title = "AI声音描述",
-                description = "声音详细描述文本",
+                title = "胡桃",
+                description = "本堂主就是第七十七代往生堂堂主",
                 duration = "0:05",
-                avatarResId = R.drawable.notification_bell,
+                avatarResId = R.drawable.hutao,
+                wavFile = R.raw.test,
                 isPlaying = false
             )
         )
@@ -117,65 +129,44 @@ class HomeFragment : Fragment() {
         voiceItems.add(
             VoiceItem(
                 id = 2,
-                title = "AI声音描述",
-                description = "声音详细描述文本",
+                title = "爱莉希雅",
+                description = "此后，将有群星闪耀，因为我如今来过。",
                 duration = "0:05",
-                avatarResId = R.drawable.notification_bell,
+                avatarResId = R.drawable.elysia,
+                wavFile = R.raw.test,
                 isPlaying = false
             )
         )
+
     }
 
-    private fun onVoiceItemPlayPauseClick(position: Int) {
-        val voiceItem = voiceItems[position]
-
-        // Toggle play state
-        if (voiceItem.isPlaying) {
-            // Pause this item
-            pauseAudio(position)
+    private fun onVoiceItemPlayPauseClick(
+        position: Int
+    ) {
+        if (currentPlayingPosition == position && mediaPlayer.isPlaying) {
+            mediaPlayer.pause()
         } else {
-            // Pause any currently playing item first
-            for (i in voiceItems.indices) {
-                if (voiceItems[i].isPlaying && i != position) {
-                    pauseAudio(i)
-                }
+            mediaPlayer.stop()
+            mediaPlayer.reset()
+            if (currentPlayingPosition != -1) {
+                voiceItems[currentPlayingPosition].isPlaying = false
+                voiceAdapter.updatePlayState(currentPlayingPosition)
             }
+            currentPlayingPosition = position
+            voiceItems[currentPlayingPosition].isPlaying = true
+            voiceAdapter.updatePlayState(currentPlayingPosition)
 
-            // Play the selected item
-            playAudio(position)
+            val afd = requireContext().resources.openRawResourceFd(voiceItems[position].wavFile)
+            mediaPlayer.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+            afd.close()
+            mediaPlayer.prepare()
+            mediaPlayer.start()
         }
     }
 
-    private fun playAudio(position: Int) {
-        // Update model
-        voiceItems[position].isPlaying = true
-
-        // Update UI
-        voiceAdapter.updatePlayState(position)
-
-        // Here you would actually start audio playback
-        Toast.makeText(context, "播放: ${voiceItems[position].title}", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun pauseAudio(position: Int) {
-        // Update model
-        voiceItems[position].isPlaying = false
-
-        // Update UI
-        voiceAdapter.updatePlayState(position)
-
-        // Here you would actually pause audio playback
-        Toast.makeText(context, "暂停: ${voiceItems[position].title}", Toast.LENGTH_SHORT).show()
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment.
-         *
-         * @return A new instance of fragment HomeFragment.
-         */
-        @JvmStatic
-        fun newInstance() = HomeFragment()
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+        progressUpdateRunnable?.let { handler.removeCallbacks(it) }
     }
 }

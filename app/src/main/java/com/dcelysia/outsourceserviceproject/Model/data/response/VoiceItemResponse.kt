@@ -12,5 +12,6 @@ data class VoiceItem(
     val description: String,
     val duration: String,
     val avatarResId: Int,
+    val wavFile: Int,
     var isPlaying: Boolean = false
 )

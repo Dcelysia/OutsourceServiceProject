@@ -9,7 +9,16 @@
         android:id="@+id/homeFragment"
         android:name="com.dcelysia.outsourceserviceproject.Fragment.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_voiceSynthesisFragment"
+            app:destination="@id/voiceSynthesisFragment"
+            app:enterAnim="@anim/fade_in"
+            app:popEnterAnim="@anim/fade_out"/>
+        <action
+            android:id="@+id/action_homeFragment_to_audioConverterFragment"
+            app:destination="@id/audioConverterFragment" />
+    </fragment>
     <fragment
         android:id="@+id/storeFragment"
         android:name="com.dcelysia.outsourceserviceproject.Fragment.StoreFragment"
@@ -23,9 +32,9 @@
         android:id="@+id/audioConverterFragment"
         android:name="com.dcelysia.outsourceserviceproject.Fragment.AudioConverterFragment"
         android:label="AudioConverterFragment" />
+
     <fragment
-        android:id="@+id/synthesisFragment"
-        android:name="com.dcelysia.outsourceserviceproject.Fragment.SynthesisFragment"
-        android:label="fragment_synthesis"
-        tools:layout="@layout/fragment_synthesis" />
+        android:id="@+id/voiceSynthesisFragment"
+        android:name="com.dcelysia.outsourceserviceproject.Fragment.VoiceSynthesisFragment"
+        android:label="VoiceSynthesisFragment" />
 </navigation>

@@ -1,25 +1,12 @@
 package com.dcelysia.outsourceserviceproject.Activity
 
-import com.dcelysia.outsourceserviceproject.Fragment.AudioConverterFragment
-import com.dcelysia.outsourceserviceproject.Fragment.HomeFragment
-import com.dcelysia.outsourceserviceproject.Fragment.MineFragment
 import com.dcelysia.outsourceserviceproject.R
 import android.os.Bundle
-import android.view.MenuItem
-import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.navigation.Navigation
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
-import com.dcelysia.outsourceserviceproject.Fragment.StoreFragment
-import com.dcelysia.outsourceserviceproject.Fragment.SynthesisFragment
 import com.dcelysia.outsourceserviceproject.databinding.ActivityMainBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
