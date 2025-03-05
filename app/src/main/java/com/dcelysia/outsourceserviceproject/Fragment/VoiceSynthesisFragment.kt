@@ -87,16 +87,9 @@ class VoiceSynthesisFragment : Fragment() {
 
 
     private fun setupVoiceModelSpinner() {
-        val adapter = ArrayAdapter(
-            requireContext(),
-            R.layout.spinner_text_item,
-            voiceModels
-        ).apply {
-            setDropDownViewResource(R.layout.spinner_text_item)
+        binding.voiceModelChosen.setOnClickListener {
+            findNavController().navigate(R.id.action_voiceSynthesisFragment_to_modelsFragment)
         }
-
-        binding.voiceModelSpinner.adapter = adapter
-        binding.voiceModelSpinner.setSelection(0)
     }
 
     private fun setupSpeechRateSeekBar() {

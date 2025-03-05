@@ -5,8 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.dcelysia.outsourceserviceproject.Model.data.response.VoiceItem
 import com.dcelysia.outsourceserviceproject.R
+import com.dcelysia.outsourceserviceproject.adapter.ModelsAdapter
 import com.dcelysia.outsourceserviceproject.databinding.FragmentHomeBinding
 import com.dcelysia.outsourceserviceproject.databinding.FragmentModelsBinding
 
@@ -33,7 +35,7 @@ class ModelsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        initVoiceItems()
         setRecyclerView()
     }
 
@@ -152,7 +154,8 @@ class ModelsFragment : Fragment() {
     }
 
     private fun setRecyclerView() {
-
+        recyclerView.adapter = ModelsAdapter(voiceItems)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
     companion object {

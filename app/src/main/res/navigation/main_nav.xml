@@ -43,5 +43,18 @@
     <fragment
         android:id="@+id/voiceSynthesisFragment"
         android:name="com.dcelysia.outsourceserviceproject.Fragment.VoiceSynthesisFragment"
-        android:label="VoiceSynthesisFragment" />
+        android:label="VoiceSynthesisFragment">
+        <action
+            android:id="@+id/action_voiceSynthesisFragment_to_modelsFragment"
+            app:destination="@id/modelsFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/modelsFragment"
+        android:name="com.dcelysia.outsourceserviceproject.Fragment.ModelsFragment"
+        android:label="fragment_models"
+        tools:layout="@layout/fragment_models" />
 </navigation>

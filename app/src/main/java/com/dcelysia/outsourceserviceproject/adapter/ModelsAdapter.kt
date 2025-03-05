@@ -72,7 +72,7 @@ class ModelsAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0 || position == 4) {
+        return if (position == 0 || position == 5) {
             VIEW_TYPE_TEXT
         } else {
             VIEW_TYPE_MODEL

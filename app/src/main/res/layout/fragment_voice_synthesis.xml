@@ -78,8 +78,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/voiceModelLabel">
 
-        <Spinner
-            android:id="@+id/voiceModelSpinner"
+        <TextView
+            android:id="@+id/voiceModelChosen"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="#F1F2F4"
