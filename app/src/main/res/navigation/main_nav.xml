@@ -44,6 +44,10 @@
         android:id="@+id/voiceSynthesisFragment"
         android:name="com.dcelysia.outsourceserviceproject.Fragment.VoiceSynthesisFragment"
         android:label="VoiceSynthesisFragment">
+        <argument
+            android:name="modelName"
+            android:defaultValue="请选择"
+            app:argType="string" />
         <action
             android:id="@+id/action_voiceSynthesisFragment_to_modelsFragment"
             app:destination="@id/modelsFragment"
@@ -52,9 +56,23 @@
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/fade_out" />
     </fragment>
+
     <fragment
         android:id="@+id/modelsFragment"
         android:name="com.dcelysia.outsourceserviceproject.Fragment.ModelsFragment"
         android:label="fragment_models"
-        tools:layout="@layout/fragment_models" />
+        tools:layout="@layout/fragment_models">
+
+
+        <action
+            android:id="@+id/action_modelsFragment_to_voiceSynthesisFragment"
+            app:destination="@id/voiceSynthesisFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out"
+            app:popUpTo="@id/voiceSynthesisFragment"
+            app:popUpToInclusive="true" />
+
+    </fragment>
 </navigation>

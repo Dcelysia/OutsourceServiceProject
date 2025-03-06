@@ -5,12 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.dcelysia.outsourceserviceproject.Model.data.response.VoiceItem
 import com.dcelysia.outsourceserviceproject.R
 
 class ModelsAdapter(
-    private val voiceItems: List<VoiceItem>
+    private val voiceItems: List<VoiceItem>,
+    private val choice: (String) -> Unit
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -26,7 +28,12 @@ class ModelsAdapter(
         val tvDuration: TextView = itemView.findViewById(R.id.tv_duration)
         val btnPlayPause: ImageView = itemView.findViewById(R.id.btn_play_pause)
         val playImageView: ImageView = itemView.findViewById(R.id.view_audio_progress)
+        val allModel: CardView = itemView.findViewById(R.id.all_model)
         fun bind(voiceItem: VoiceItem) {
+
+            allModel.setOnClickListener {
+                choice(voiceItem.title)
+            }
             ivAvatar.setImageResource(voiceItem.avatarResId)
             tvTitle.text = voiceItem.title
             tvDescription.text = voiceItem.description
@@ -49,6 +56,7 @@ class ModelsAdapter(
         val title: TextView = view.findViewById(R.id.text_title)
 
         fun bind(text: String) {
+
             title.text = text
         }
     }

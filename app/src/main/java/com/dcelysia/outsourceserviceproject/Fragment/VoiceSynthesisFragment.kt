@@ -92,6 +92,12 @@ class VoiceSynthesisFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        val args = VoiceSynthesisFragmentArgs.fromBundle(requireArguments())
+        binding.voiceModelChosen.text = args.modelName
+    }
+
     private fun setupSpeechRateSeekBar() {
         // Set initial progress to 1.0x (middle of the range)
         binding.speechRateSeekBar.progress = 50

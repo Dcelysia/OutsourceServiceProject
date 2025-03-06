@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dcelysia.outsourceserviceproject.Model.data.response.VoiceItem
 import com.dcelysia.outsourceserviceproject.R
@@ -154,7 +155,13 @@ class ModelsFragment : Fragment() {
     }
 
     private fun setRecyclerView() {
-        recyclerView.adapter = ModelsAdapter(voiceItems)
+        recyclerView.adapter = ModelsAdapter(voiceItems) { msg ->
+            findNavController().navigate(
+                ModelsFragmentDirections.actionModelsFragmentToVoiceSynthesisFragment(
+                    modelName = msg
+                )
+            )
+        }
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 

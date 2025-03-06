@@ -83,7 +83,12 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="#F1F2F4"
-            android:spinnerMode="dropdown" />
+            android:gravity="left|center"
+            android:paddingStart="10dp"
+            android:spinnerMode="dropdown"
+            android:text="请选择"
+            android:textSize="16sp"
+            android:textColor="#888F99" />
     </androidx.cardview.widget.CardView>
 
     <!-- Speech rate adjustment -->
