@@ -44,4 +44,9 @@
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
     </style>
 
+    <style name="GlassEffectContainer">
+        <item name="android:background">@drawable/blur_background</item>
+        <item name="android:padding">16dp</item>
+    </style>
+
 </resources>
