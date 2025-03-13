@@ -1,13 +1,11 @@
-package com.example.musicplayer
+package com.dcelysia.outsourceserviceproject.Fragment
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import eightbitlab.com.blurview.BlurView
-import eightbitlab.com.blurview.RenderScriptBlur
 import android.widget.SeekBar
 import com.dcelysia.outsourceserviceproject.R
 import com.dcelysia.outsourceserviceproject.databinding.FragmentAlbumBinding
@@ -58,9 +56,8 @@ class AlbumFragment : Fragment() {
 
         blurView.setupWith(rootView)
             .setFrameClearDrawable(windowBackground)
-            .setBlurAlgorithm(RenderScriptBlur(requireContext()))
+            .setBlurEnabled(true)
             .setBlurRadius(radius)
-            .setHasFixedTransformationMatrix(true)
     }
 
     override fun onDestroyView() {
@@ -70,7 +67,7 @@ class AlbumFragment : Fragment() {
 
     private fun setupListeners() {
         // Play/Pause button
-        binding.btnPlay.setOnClickListener {
+        binding.imgPlayIcon.setOnClickListener {
             isPlaying = !isPlaying
             updatePlayPauseButton()
 
@@ -83,14 +80,14 @@ class AlbumFragment : Fragment() {
             }
         }
 
-        // Like button
-        binding.btnHeart.setOnClickListener {
-            isLiked = !isLiked
-            updateLikeButton()
-
-            // Add like/unlike logic here
-            // songRepository.setLiked(songId, isLiked)
-        }
+//        // Like button
+//        binding.btnHeart.setOnClickListener {
+//            isLiked = !isLiked
+//            updateLikeButton()
+//
+//            // Add like/unlike logic here
+//            // songRepository.setLiked(songId, isLiked)
+//        }
 
         // SeekBar change listener
         binding.seekbarProgress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -134,17 +131,17 @@ class AlbumFragment : Fragment() {
             playPreviousSong()
         }
 
-        // Playlist button
-        binding.btnPlaylist.setOnClickListener {
-            // Show playlist
-            showPlaylist()
-        }
-
-        // Shuffle button
-        binding.btnShuffle.setOnClickListener {
-            // Toggle shuffle mode
-            toggleShuffle()
-        }
+//        // Playlist button
+//        binding.btnPlaylist.setOnClickListener {
+//            // Show playlist
+//            showPlaylist()
+//        }
+//
+//        // Shuffle button
+//        binding.btnShuffle.setOnClickListener {
+//            // Toggle shuffle mode
+//            toggleShuffle()
+//        }
     }
 
     private fun loadSongData() {
@@ -154,7 +151,7 @@ class AlbumFragment : Fragment() {
             artist = "林俊杰",
             currentLyric = "我们背对背拥抱",
             duration = "03:54",
-            albumArtResId = R.drawable.album_placeholder, // Use your actual resource
+            albumArtResId = R.drawable.album_time, // Use your actual resource
             isLiked = true
         )
 
@@ -171,9 +168,9 @@ class AlbumFragment : Fragment() {
             imgAlbum.setImageResource(song.albumArtResId)
         }
 
-        // Update like status
-        isLiked = song.isLiked
-        updateLikeButton()
+//        // Update like status
+//        isLiked = song.isLiked
+//        updateLikeButton()
     }
 
     private fun updatePlayPauseButton() {
@@ -183,19 +180,19 @@ class AlbumFragment : Fragment() {
         )
     }
 
-    private fun updateLikeButton() {
-        // Update heart icon color
-        with(binding.imgHeart) {
-            setImageResource(
-                if (isLiked) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline
-            )
-            setColorFilter(
-                resources.getColor(
-                    if (isLiked) R.color.red_heart else R.color.white_70
-                )
-            )
-        }
-    }
+//    private fun updateLikeButton() {
+//        // Update heart icon color
+//        with(binding.imgHeart) {
+//            setImageResource(
+//                if (isLiked) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline
+//            )
+//            setColorFilter(
+//                resources.getColor(
+//                    if (isLiked) R.color.red_heart else R.color.white_70
+//                )
+//            )
+//        }
+//    }
 
     private fun updateCurrentTimeFromProgress(progress: Int) {
         // Calculate time from progress percentage

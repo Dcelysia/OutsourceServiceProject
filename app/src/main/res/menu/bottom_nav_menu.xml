@@ -5,9 +5,10 @@
         android:icon="@drawable/ic_home"
         android:title="@string/home" />
     <item
-        android:id="@+id/synthesisFragment"
+        android:id="@+id/albumFragment"
         android:icon="@drawable/ic_audio"
         android:title="@string/audio" />
+
 <!--    <item-->
 <!--        android:id="@+id/audioConverterFragment"-->
 <!--        android:icon="@drawable/ic_converter"-->

@@ -31,6 +31,13 @@
         android:name="com.dcelysia.outsourceserviceproject.Fragment.StoreFragment"
         android:label="fragment_store"
         tools:layout="@layout/fragment_store" />
+
+    <fragment
+        android:id="@+id/albumFragment"
+        android:name="com.dcelysia.outsourceserviceproject.Fragment.AlbumFragment"
+        android:label="fragment_album"
+        tools:layout="@layout/fragment_album" />
+
     <fragment
         android:id="@+id/mineFragment"
         android:name="com.dcelysia.outsourceserviceproject.Fragment.MineFragment"
@@ -52,6 +59,7 @@
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/fade_out" />
     </fragment>
+
     <fragment
         android:id="@+id/modelsFragment"
         android:name="com.dcelysia.outsourceserviceproject.Fragment.ModelsFragment"
