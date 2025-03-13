@@ -12,10 +12,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.AppCompatEditText
 import com.dcelysia.outsourceserviceproject.R
 
-/**
- * 验证码输入框,重写EditText的绘制方法实现。
- * @author RAE
- */
 class CodeEditText @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
