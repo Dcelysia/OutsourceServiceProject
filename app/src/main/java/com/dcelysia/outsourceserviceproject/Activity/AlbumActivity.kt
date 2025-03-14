@@ -1,14 +1,13 @@
 package com.dcelysia.outsourceserviceproject.Activity
 
-import android.app.ActivityOptions
 import android.os.Bundle
-import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import eightbitlab.com.blurview.BlurView
 import com.dcelysia.outsourceserviceproject.R
 import com.dcelysia.outsourceserviceproject.databinding.ActivityAlbumBinding
+
 
 class AlbumActivity : AppCompatActivity() {
     // ViewBinding
@@ -22,7 +21,6 @@ class AlbumActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAlbumBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         // 设置毛玻璃效果
         setupBlurEffect()
@@ -94,7 +92,7 @@ class AlbumActivity : AppCompatActivity() {
     private fun setupNavigationListeners() {
         // Back button
         binding.btnBack.setOnClickListener {
-            finish() // 结束当前 Activity
+            finishWithSlideDownAnimation()
         }
 
         // Next button
@@ -106,6 +104,19 @@ class AlbumActivity : AppCompatActivity() {
         binding.btnPrevious.setOnClickListener {
             playPreviousSong()
         }
+    }
+
+    private fun finishWithSlideDownAnimation() {
+        finish()
+        // Apply custom slide down animation
+        overridePendingTransition(0, R.anim.slide_down_exit)
+    }
+
+    // Override onBackPressed to also apply our custom animation
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(0, R.anim.slide_down_exit)
     }
 
     private fun loadSongData() {
@@ -177,5 +188,4 @@ class AlbumActivity : AppCompatActivity() {
         val albumArtResId: Int,
         val isLiked: Boolean
     )
-
 }
