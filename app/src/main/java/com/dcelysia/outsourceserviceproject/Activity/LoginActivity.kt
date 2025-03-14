@@ -195,7 +195,7 @@ class LoginActivity : AppCompatActivity() {
                         when (state) {
                             is Resource.Error -> {
                                 CustomToast.showMessage(this@LoginActivity, state.message)
-                                hideOverlay()
+                                 hideOverlay()
                             }
                             is Resource.Loading -> {
                                 showOverlay()
