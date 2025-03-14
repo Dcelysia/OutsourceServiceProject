@@ -5,17 +5,10 @@
         android:icon="@drawable/ic_home"
         android:title="@string/home" />
     <item
-        android:id="@+id/synthesisFragment"
+        android:id="@+id/albumFragment"
         android:icon="@drawable/ic_audio"
         android:title="@string/audio" />
-<!--    <item-->
-<!--        android:id="@+id/audioConverterFragment"-->
-<!--        android:icon="@drawable/ic_converter"-->
-<!--        android:title="@string/converter" />-->
-<!--    <item-->
-<!--        android:id="@+id/storeFragment"-->
-<!--        android:icon="@drawable/ic_stats"-->
-<!--        android:title="@string/stats" />-->
+
     <item
         android:id="@+id/mineFragment"
         android:icon="@drawable/ic_profile"

@@ -31,6 +31,13 @@
         android:name="com.dcelysia.outsourceserviceproject.Fragment.StoreFragment"
         android:label="fragment_store"
         tools:layout="@layout/fragment_store" />
+
+    <fragment
+        android:id="@+id/albumFragment"
+        android:name="com.dcelysia.outsourceserviceproject.Fragment.AlbumFragment"
+        android:label="fragment_album"
+        tools:layout="@layout/fragment_album" />
+
     <fragment
         android:id="@+id/mineFragment"
         android:name="com.dcelysia.outsourceserviceproject.Fragment.MineFragment"
