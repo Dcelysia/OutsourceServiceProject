@@ -43,7 +43,6 @@
     <string name="upload_file">上传文件</string>
     <string name="record">录音</string>
     <string name="upload_instruction">上传您的音频文件以使用AI 智能变声器进行变声处理。\n支持的格式包括 MP3、WAV 和 AAC，最大\n文件大小为100MB，以获得最佳性能。</string>
-    <string name="upload_audio_file">上传音频文件</string>
     <string name="home">首页</string>
     <string name="audio">音频</string>
     <string name="converter">变声器</string>
@@ -91,5 +90,9 @@
     <string name="discover">发现</string>
     <string name="explore">漫游</string>
     <string name="notes">笔记</string>
+
+    <string name="start_recording">开始录音</string>
+    <string name="stop_recording">停止录音</string>
+    <string name="upload_audio_file">上传音频文件</string>
 
 </resources>

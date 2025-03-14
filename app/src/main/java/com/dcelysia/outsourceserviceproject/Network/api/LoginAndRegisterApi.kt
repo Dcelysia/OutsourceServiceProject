@@ -14,5 +14,4 @@ interface LoginAndRegisterApi {
     @POST("/user/register")
     suspend fun register(@Body request: LoginAndRegisterRequest) : Response<LoginAndRegisterResponse>
 
-
 }

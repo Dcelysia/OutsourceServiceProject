@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.androidx.navigation.safeargs.kotlin)
+    id("kotlin-kapt")
 }
 
 android {
@@ -74,12 +75,15 @@ dependencies {
     implementation("com.github.zfman:TimetableView:2.0.7")
     // 图片裁剪库
     implementation("com.github.Yalantis:uCrop:2.2.8")
-//
+
     // navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
     implementation ("com.github.Dimezis:BlurView:version-2.0.6")
 
+    //Room
+    implementation("androidx.room:room-runtime:2.5.2")
+    kapt("androidx.room:room-compiler:2.5.2")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

@@ -45,7 +45,17 @@
     <fragment
         android:id="@+id/audioConverterFragment"
         android:name="com.dcelysia.outsourceserviceproject.Fragment.AudioConverterFragment"
-        android:label="AudioConverterFragment" />
+        android:label="AudioConverterFragment">
+
+
+        <action
+            android:id="@+id/action_audioConverterFragment_to_audioTrainingFragment"
+            app:destination="@id/audioTrainingFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+    </fragment>
 
     <fragment
         android:id="@+id/voiceSynthesisFragment"
@@ -81,5 +91,14 @@
             app:popUpTo="@id/voiceSynthesisFragment"
             app:popUpToInclusive="true" />
 
+    </fragment>
+    <fragment
+        android:id="@+id/audioTrainingFragment"
+        android:name="com.dcelysia.outsourceserviceproject.Fragment.AudioTrainingFragment"
+        android:label="AudioTrainingFragment">
+        <argument
+            android:name="audioUri"
+            android:defaultValue=""
+            app:argType="string" />
     </fragment>
 </navigation>
