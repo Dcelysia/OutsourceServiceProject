@@ -8,10 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
-import com.dcelysia.outsourceserviceproject.Fragment.AlbumFragment
 import com.dcelysia.outsourceserviceproject.core.Route
 import com.dcelysia.outsourceserviceproject.databinding.ActivityMainBinding
 
@@ -45,5 +46,24 @@ class MainActivity : AppCompatActivity() {
         binding.miniPlayerLayout.setOnClickListener {
             Route.goAlbum(this@MainActivity)
         }
+
+        // 默认隐藏播放栏
+        binding.miniPlayerLayout.visibility = View.GONE
+
+        // 添加导航监听器，根据目的地决定是否显示播放栏
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            updateMiniPlayerVisibility(destination)
+        }
+    }
+
+    /**
+     * 根据当前导航目的地更新播放栏的可见性
+     */
+    private fun updateMiniPlayerVisibility(destination: NavDestination) {
+        // 判断当前是否是AlbumFragment
+        val isAlbumFragment = destination.id == R.id.albumFragment
+
+        // 如果是AlbumFragment，显示播放栏，否则隐藏
+        binding.miniPlayerLayout.visibility = if (isAlbumFragment) View.VISIBLE else View.GONE
     }
 }

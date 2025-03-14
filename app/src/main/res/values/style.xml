@@ -63,4 +63,24 @@
         <item name="android:padding">2dp</item>
         <item name="android:layout_margin">0dp</item>
     </style>
+
+    <!-- 底部导航激活状态指示器样式 -->
+    <style name="BottomNavIndicatorStyle">
+        <item name="android:color">@color/primary</item>
+        <item name="android:width">32dp</item>
+        <item name="android:height">3dp</item>
+    </style>
+
+    <!-- 底部导航激活状态文字样式 -->
+    <style name="BottomNavigationActiveTextStyle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- 底部导航非激活状态文字样式 -->
+    <style name="BottomNavigationInactiveTextStyle">
+        <item name="android:textSize">11sp</item>
+        <item name="fontFamily">sans-serif</item>
+    </style>
 </resources>
