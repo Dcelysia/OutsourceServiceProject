@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
+import com.dcelysia.outsourceserviceproject.Fragment.AlbumFragment
+import com.dcelysia.outsourceserviceproject.core.Route
 import com.dcelysia.outsourceserviceproject.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +29,10 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             NavigationUI.onNavDestinationSelected(item, navController)
             return@setOnItemSelectedListener true
+        }
+
+        binding.miniPlayerLayout.setOnClickListener {
+            Route.goAlbum(this@MainActivity)
         }
     }
 }

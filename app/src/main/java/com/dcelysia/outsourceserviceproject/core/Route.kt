@@ -1,14 +1,23 @@
 package com.dcelysia.outsourceserviceproject.core
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.dcelysia.outsourceserviceproject.Activity.AccountSecurityActivity
+import com.dcelysia.outsourceserviceproject.Activity.AlbumActivity
 import com.dcelysia.outsourceserviceproject.Activity.LoginActivity
 import com.dcelysia.outsourceserviceproject.Activity.MainActivity
 import com.dcelysia.outsourceserviceproject.Activity.PersonProfileActivity
 import com.dcelysia.outsourceserviceproject.Activity.RegisterActivity
 import com.dcelysia.outsourceserviceproject.Activity.SubscriptionActivity
 import com.dcelysia.outsourceserviceproject.Activity.VerificationCodeActivity
+import com.dcelysia.outsourceserviceproject.R
+
 
 object Route {
 
@@ -58,5 +67,24 @@ object Route {
     fun goPersonProfile(context: Context) {
         val intent = Intent(context, PersonProfileActivity::class.java)
         context.startActivity(intent)
+    }
+
+    fun goAlbum(context: Context) {
+        val intent = Intent(context, AlbumActivity::class.java)
+        val options = ActivityOptions.makeCustomAnimation(context, R.anim.slide_in_up, R.anim.slide_out_down)
+        context.startActivity(intent, options.toBundle())
+    }
+
+    fun loadFragment(fragment: Fragment,activity: AppCompatActivity) {
+        val fragmentManager: FragmentManager = activity.supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+
+        // 可以选择添加动画效果
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+
+        // 替换 Fragment
+        fragmentTransaction.add(R.id.main_activity, fragment,"")
+        fragmentTransaction.addToBackStack(null) // 可选，允许用户返回到上一个 Fragment
+        fragmentTransaction.commit()
     }
 }
