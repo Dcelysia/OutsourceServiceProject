@@ -42,6 +42,5 @@ dependencyResolutionManagement {
     }
 }
 
-
 rootProject.name = "OutsourceServiceProject"
 include(":app")

@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dcelysia.outsourceserviceproject.Model.data.response.VoiceItem
 import com.dcelysia.outsourceserviceproject.R
 import com.dcelysia.outsourceserviceproject.adapter.ModelsAdapter
-import com.dcelysia.outsourceserviceproject.databinding.FragmentHomeBinding
 import com.dcelysia.outsourceserviceproject.databinding.FragmentModelsBinding
 
 class ModelsFragment : Fragment() {

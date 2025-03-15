@@ -15,6 +15,7 @@ import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 
 class GPTSoVITSWebSocket private constructor() {
     private var webSocket: WebSocket? = null
@@ -69,6 +70,7 @@ class GPTSoVITSWebSocket private constructor() {
                 }
             } else {
                 callback.onError("文件上传失败：${uploadResult.exceptionOrNull()?.message}")
+                Log.d(TAG,"${uploadResult.exceptionOrNull()?.message}")
             }
         }
     }
@@ -243,8 +245,36 @@ class GPTSoVITSWebSocket private constructor() {
         context: Context,
         callback: (Result<String>) -> Unit
     ) {
+        // 添加一个标志，确保回调只被调用一次
+        val callbackInvoked = AtomicBoolean(false)
+
+        // 定义安全回调函数，确保只调用一次
+        fun safeCallback(result: Result<String>) {
+            if (callbackInvoked.compareAndSet(false, true)) {
+                Handler(Looper.getMainLooper()).post {
+                    callback(result)
+                }
+            }
+        }
+
+        // 设置超时
+        val timeoutHandler = Handler(Looper.getMainLooper())
+        val timeoutRunnable = Runnable {
+            Log.e(TAG, "WebSocket connection timed out")
+            safeCallback(Result.failure(Exception("上传超时，请检查网络连接")))
+        }
+        // 设置1分钟超时
+        timeoutHandler.postDelayed(timeoutRunnable, 180000)
+
         try {
             val file = getFileFromUri(audioUri, context) ?: throw Exception("无法读取音频文件")
+
+            // 检查文件大小
+            if (file.length() == 0L) {
+                timeoutHandler.removeCallbacks(timeoutRunnable)
+                safeCallback(Result.failure(Exception("音频文件为空")))
+                return
+            }
 
             val request = Request.Builder()
                 .url("${SERVER_URL}/ws/upload_reference")
@@ -253,6 +283,7 @@ class GPTSoVITSWebSocket private constructor() {
             val webSocket = client.newWebSocket(request, object : WebSocketListener() {
                 override fun onOpen(webSocket: WebSocket, response: Response) {
                     try {
+                        Log.d(TAG, "WebSocket连接已打开，准备上传参考音频")
                         // 发送初始化数据
                         val initData = JSONObject().apply {
                             put("username", username)
@@ -261,26 +292,42 @@ class GPTSoVITSWebSocket private constructor() {
                         webSocket.send(initData.toString())
 
                         // 发送文件数据
-                        file.inputStream().use { input ->
-                            val buffer = ByteArray(1024 * 1024) // 1MB buffer
-                            var bytesRead: Int
-                            while (input.read(buffer).also { bytesRead = it } != -1) {
-                                if (bytesRead > 0) {
-                                    val bytes = buffer.copyOfRange(0, bytesRead)
-                                    // 使用 ByteString.toByteString() 扩展函数
-                                    webSocket.send(bytes.toByteString())
+                        try {
+                            file.inputStream().use { input ->
+                                val buffer = ByteArray(512 * 1024) // 减小缓冲区到512KB，避免内存问题
+                                var bytesRead: Int
+                                var totalSent = 0L
+
+                                while (input.read(buffer).also { bytesRead = it } != -1) {
+                                    if (bytesRead > 0) {
+                                        val bytes = buffer.copyOfRange(0, bytesRead)
+                                        webSocket.send(bytes.toByteString())
+                                        totalSent += bytesRead
+
+                                        // 每发送5MB记录一次日志
+                                        if (totalSent % (5 * 1024 * 1024) < bytesRead) {
+                                            Log.d(TAG, "已发送 ${totalSent / (1024 * 1024)}MB 数据")
+                                        }
+                                    }
                                 }
+                                Log.d(TAG, "文件数据发送完成，总共 ${totalSent / 1024}KB")
                             }
+                        } catch (e: Exception) {
+                            Log.e(TAG, "发送文件数据时出错", e)
+                            timeoutHandler.removeCallbacks(timeoutRunnable)
+                            safeCallback(Result.failure(Exception("发送文件数据失败: ${e.message}")))
+                            webSocket.close(1000, "发送失败")
+                            return
                         }
 
                         // 发送结束标记
+                        Log.d(TAG, "发送结束标记")
                         webSocket.send("done")
 
                     } catch (e: Exception) {
                         Log.e(TAG, "Error sending file", e)
-                        Handler(Looper.getMainLooper()).post {
-                            callback(Result.failure(e))
-                        }
+                        timeoutHandler.removeCallbacks(timeoutRunnable)
+                        safeCallback(Result.failure(e))
                         webSocket.close(1000, "发送失败")
                     }
                 }
@@ -288,38 +335,41 @@ class GPTSoVITSWebSocket private constructor() {
                 override fun onMessage(webSocket: WebSocket, text: String) {
                     try {
                         Log.d(TAG, "Received message: $text")
+                        // 取消超时
+                        timeoutHandler.removeCallbacks(timeoutRunnable)
+
                         val json = JSONObject(text)
                         when (json.getString("status")) {
                             "success" -> {
                                 val filePath = json.getString("file_path")
-                                Handler(Looper.getMainLooper()).post {
-                                    callback(Result.success(filePath))
-                                }
+                                safeCallback(Result.success(filePath))
                                 webSocket.close(1000, "上传完成")
                             }
 
                             "error" -> {
                                 val error = json.getString("error")
-                                Handler(Looper.getMainLooper()).post {
-                                    callback(Result.failure(Exception(error)))
-                                }
+                                safeCallback(Result.failure(Exception(error)))
                                 webSocket.close(1000, "上传失败")
+                            }
+
+                            else -> {
+                                safeCallback(Result.failure(Exception("未知响应状态: ${json.getString("status")}")))
+                                webSocket.close(1000, "未知响应")
                             }
                         }
                     } catch (e: Exception) {
                         Log.e(TAG, "Error processing message", e)
-                        Handler(Looper.getMainLooper()).post {
-                            callback(Result.failure(e))
-                        }
+                        timeoutHandler.removeCallbacks(timeoutRunnable)
+                        safeCallback(Result.failure(e))
                         webSocket.close(1000, "处理响应失败")
                     }
                 }
 
                 override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                     Log.e(TAG, "WebSocket failure", t)
-                    Handler(Looper.getMainLooper()).post {
-                        callback(Result.failure(t))
-                    }
+                    timeoutHandler.removeCallbacks(timeoutRunnable)
+                    safeCallback(Result.failure(t))
+                    webSocket.close(1001, "连接失败")
                 }
 
                 override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
@@ -329,13 +379,17 @@ class GPTSoVITSWebSocket private constructor() {
 
                 override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                     Log.d(TAG, "WebSocket closed: $code - $reason")
+                    // 如果连接已关闭但没有收到成功或失败的消息，确保回调被调用
+                    if (!callbackInvoked.get()) {
+                        timeoutHandler.removeCallbacks(timeoutRunnable)
+                        safeCallback(Result.failure(Exception("连接已关闭，但没有收到响应")))
+                    }
                 }
             })
         } catch (e: Exception) {
             Log.e(TAG, "Error in uploadReferenceFile", e)
-            Handler(Looper.getMainLooper()).post {
-                callback(Result.failure(e))
-            }
+            timeoutHandler.removeCallbacks(timeoutRunnable)
+            safeCallback(Result.failure(e))
         }
     }
 

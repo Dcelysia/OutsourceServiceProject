@@ -1,5 +1,6 @@
 package com.dcelysia.outsourceserviceproject.Fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
@@ -10,6 +11,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +29,11 @@ import com.dcelysia.outsourceserviceproject.Utils.GPTSoVITSWebSocket
 import com.dcelysia.outsourceserviceproject.databinding.FragmentAudioTrainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
+import androidx.core.net.toUri
 
 class AudioTrainingFragment : Fragment() {
     private val binding by lazy(LazyThreadSafetyMode.NONE) {
@@ -57,13 +63,14 @@ class AudioTrainingFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // 获取原始音频URI
         val args = AudioTrainingFragmentArgs.fromBundle(requireArguments())
         if (args.audioUri.isNotEmpty()) {
-            val audioUri = Uri.parse(args.audioUri)
+            val audioUri = args.audioUri.toUri()
             originalAudioUri = audioUri
             binding.fileNameTextView.text = "已选择文件：${getFileName(audioUri)}"
             initializeMediaPlayer(audioUri, isReference = false)
@@ -95,12 +102,32 @@ class AudioTrainingFragment : Fragment() {
 
         // 上传参考音频按钮
         binding.uploadReferenceButton.setOnClickListener {
-            openSystemRecorder()
+            openAudioFilePicker()
         }
-
         // 开始训练按钮
         binding.startTrainingButton.setOnClickListener {
             validateAndStartTraining()
+        }
+    }
+
+    private fun openAudioFilePicker() {
+        try {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "audio/*"
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            startActivityForResult(Intent.createChooser(intent, "选择音频文件"), RECORD_AUDIO_REQUEST)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, "未找到文件管理器应用", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == RECORD_AUDIO_REQUEST) {
+            data?.data?.let { uri ->
+                validateAndSetReferenceAudio(uri)
+            }
         }
     }
 
@@ -128,15 +155,6 @@ class AudioTrainingFragment : Fragment() {
             startActivityForResult(intent, RECORD_AUDIO_REQUEST)
         } catch (e: ActivityNotFoundException) {
             Toast.makeText(context, "未找到系统录音应用", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == RECORD_AUDIO_REQUEST) {
-            data?.data?.let { uri ->
-                validateAndSetReferenceAudio(uri)
-            }
         }
     }
 
@@ -395,42 +413,97 @@ class AudioTrainingFragment : Fragment() {
                 }
 
                 override fun onComplete(username: String, modelName: String) {
-                    updateLoadingProgress("上传参考音频...")
-                    webSocket.uploadReferenceFile(
-                        username = username,
-                        modelName = modelName,
-                        audioUri = referenceAudioUri!!,
-                        context = requireContext()
-                    ) { result ->
-                        requireActivity().runOnUiThread {
-                            if (result.isSuccess) {
-                                val referenceWavPath = result.getOrNull()
-                                // 保存到数据库，让 id 自增
-                                val voiceModel = VoiceModelEntity(
-                                    voiceItemId = 0, // 或者直接使用默认值
-                                    pthModelFile = "GPT_weights_v3/${username}_${modelName}-e15.ckpt",
-                                    ckptModelFile = "SoVITS_weights_v3/${username}_${modelName}_e8_s40_l32.pth",
-                                    referenceWavPath = referenceWavPath ?: "",
-                                    referenceWavText = trainingText
-                                )
+                    requireActivity().runOnUiThread {
+                        updateLoadingProgress("准备上传参考音频...")
+                    }
 
-                                // 使用协程在后台保存
-                                lifecycleScope.launch(Dispatchers.IO) {
-                                    VoiceModelDataBase.getInstance(requireContext())
-                                        .voiceModelDao()
-                                        .insert(voiceModel)
+                    // 使用IO线程来处理文件上传，避免UI线程阻塞
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        try {
+                            // 确保引用是安全的
+                            val referenceUri = referenceAudioUri ?: run {
+                                withContext(Dispatchers.Main) {
+                                    hideLoadingDialog()
+                                    isTraining = false
+                                    Toast.makeText(context, "参考音频文件丢失", Toast.LENGTH_LONG).show()
                                 }
+                                return@launch
+                            }
 
-                                hideLoadingDialog()
-                                isTraining = false
-                                Toast.makeText(context, "训练完成！", Toast.LENGTH_SHORT).show()
-                                findNavController().popBackStack()
-                            } else {
+                        // 使用协程挂起函数包装callback式API
+                        val result = suspendCancellableCoroutine<Result<String>> { continuation ->
+                            webSocket.uploadReferenceFile(
+                                username = username,
+                                modelName = modelName,
+                                audioUri = referenceUri,
+                                context = requireContext()
+                            ) { result ->
+                                // 回调结果传递给协程
+                                continuation.resume(result)
+                            }
+
+                            // 如果协程被取消，我们可以在这里添加额外的清理逻辑
+                            continuation.invokeOnCancellation {
+                                // 可以添加取消上传的逻辑，如果WebSocket API支持的话
+                            }
+                        }
+                            Log.d("Result",result.isSuccess.toString());
+
+                            // 切换回主线程更新UI
+                            withContext(Dispatchers.Main) {
+                                if (result.isSuccess) {
+                                    val referenceWavPath = result.getOrNull()
+                                    // 保存到数据库，让 id 自增
+                                    val voiceModel = VoiceModelEntity(
+                                        voiceItemId = 0, // 或者直接使用默认值
+                                        pthModelFile = "GPT_weights_v3/${username}_${modelName}-e15.ckpt",
+                                        ckptModelFile = "SoVITS_weights_v3/${username}_${modelName}_e8_s40_l32.pth",
+                                        referenceWavPath = referenceWavPath ?: "",
+                                        referenceWavText = trainingText
+                                    )
+
+                                    // 在后台保存
+                                    launch(Dispatchers.IO) {
+                                        try {
+                                            VoiceModelDataBase.getInstance(requireContext())
+                                                .voiceModelDao()
+                                                .insert(voiceModel)
+
+                                            withContext(Dispatchers.Main) {
+                                                hideLoadingDialog()
+                                                isTraining = false
+                                                Toast.makeText(context, "训练完成！", Toast.LENGTH_SHORT).show()
+                                                findNavController().popBackStack()
+                                            }
+                                        } catch (e: Exception) {
+                                            withContext(Dispatchers.Main) {
+                                                hideLoadingDialog()
+                                                isTraining = false
+                                                Toast.makeText(
+                                                    context,
+                                                    "数据库保存失败: ${e.message}",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    hideLoadingDialog()
+                                    isTraining = false
+                                    Toast.makeText(
+                                        context,
+                                        "参考音频上传失败: ${result.exceptionOrNull()?.message}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
                                 hideLoadingDialog()
                                 isTraining = false
                                 Toast.makeText(
                                     context,
-                                    "参考音频上传失败: ${result.exceptionOrNull()?.message}",
+                                    "上传处理过程出错: ${e.message}",
                                     Toast.LENGTH_LONG
                                 ).show()
                             }

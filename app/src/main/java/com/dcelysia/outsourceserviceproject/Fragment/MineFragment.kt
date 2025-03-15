@@ -1,24 +1,12 @@
 package com.dcelysia.outsourceserviceproject.Fragment
 
 import android.os.Bundle
-import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.bumptech.glide.Glide
-import com.dcelysia.outsourceserviceproject.Network.Resource
-import com.dcelysia.outsourceserviceproject.UI.CustomToast
-import com.dcelysia.outsourceserviceproject.Utils.mmkv.UserInfoManager
 import com.dcelysia.outsourceserviceproject.ViewModel.MineViewModel
-import com.dcelysia.outsourceserviceproject.core.MainApplication
-import com.dcelysia.outsourceserviceproject.core.Route
 import com.dcelysia.outsourceserviceproject.databinding.FragmentMineBinding
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

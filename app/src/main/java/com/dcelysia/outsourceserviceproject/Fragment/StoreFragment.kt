@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.dcelysia.outsourceserviceproject.R
 import com.dcelysia.outsourceserviceproject.databinding.FragmentStoreBinding
 
 // TODO: Rename parameter arguments, choose names that match
