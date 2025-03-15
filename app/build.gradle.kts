@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.androidx.navigation.safeargs.kotlin)
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp") version "1.9.21-1.0.15"
 }
 
 android {
@@ -54,7 +54,7 @@ dependencies {
     //MMKV
     implementation("com.tencent:mmkv:1.2.13")
     //腾讯云HTTPDNS
-    implementation("io.github.dnspod:httpdns-sdk:4.9.1")
+    implementation("io.github.dnspod:httpdns-sdk:4.3.0")
     // OkHttp
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
@@ -83,7 +83,9 @@ dependencies {
 
     //Room
     implementation("androidx.room:room-runtime:2.5.2")
-    kapt("androidx.room:room-compiler:2.5.2")
+
+    // Room - 使用 KSP 替代 kapt
+    ksp("androidx.room:room-compiler:2.5.2")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -93,5 +95,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
 }
