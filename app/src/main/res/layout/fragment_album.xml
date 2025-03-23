@@ -16,7 +16,7 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="180dp"
             app:contentScrim="@color/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -43,10 +43,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
+                    android:layout_gravity="center"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="12dp"
                     android:orientation="horizontal">
 
                     <!-- 专辑封面 -->
@@ -68,7 +68,7 @@
                             android:id="@+id/tvAlbumName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="专辑名称"
+                            android:text="全部模型"
                             android:textColor="@color/white"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -79,7 +79,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="艺术家"
+                            android:text="AUdio"
                             android:textColor="#E0E0E0"
                             android:textSize="14sp" />
 
@@ -91,22 +91,13 @@
                             android:layout_marginTop="8dp"
                             android:ellipsize="end"
                             android:maxLines="2"
-                            android:text="专辑描述信息..."
+                            android:text="训练后的所有模型都存储在这里"
                             android:textColor="#D0D0D0"
                             android:textSize="12sp" />
 
                     </LinearLayout>
                 </LinearLayout>
             </FrameLayout>
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:navigationIcon="@drawable/ic_arrow_back"
-                app:title=" "
-                app:titleTextColor="@color/white" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -137,7 +128,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="播放全部"
+                    android:text="模型列表"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -165,14 +156,7 @@
                 android:padding="8dp"
                 android:src="@drawable/el_custom_download" />
 
-            <!-- 更多按钮 -->
-            <ImageView
-                android:id="@+id/btnMore"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                android:src="@drawable/song_list" />
+
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
