@@ -100,7 +100,8 @@ class HomeFragment : Fragment() {
         binding.recyclerVoices.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = voiceAdapter
-            setHasFixedSize(true)
+            setHasFixedSize(false)
+            isNestedScrollingEnabled = false
         }
     }
 
