@@ -21,14 +21,6 @@ class VoiceSynthesisFragment : Fragment() {
 
     private lateinit var binding: FragmentVoiceSynthesisBinding
 
-    private val voiceModels = arrayOf(
-        "女声 - 自然温柔",
-        "女声 - 清晰明亮",
-        "男声 - 沉稳有力",
-        "男声 - 亲切自然",
-        "儿童声音"
-    )
-
     private val speechRates = arrayOf(
         0.5f,
         0.6f,

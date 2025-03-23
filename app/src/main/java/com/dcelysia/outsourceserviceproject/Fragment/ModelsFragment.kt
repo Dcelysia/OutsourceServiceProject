@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dcelysia.outsourceserviceproject.Model.data.response.VoiceItem
@@ -51,7 +52,7 @@ class ModelsFragment : Fragment() {
                 description = "本堂主就是第七十七代往生堂堂主",
                 duration = "0:05",
                 avatarResId = R.drawable.hutao,
-                wavFile = R.raw.test,
+                wavFile = R.raw.hutao_1,
                 isPlaying = false
             )
         )
