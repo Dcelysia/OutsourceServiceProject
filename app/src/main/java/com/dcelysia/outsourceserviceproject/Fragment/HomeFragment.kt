@@ -92,7 +92,7 @@ class HomeFragment : Fragment() {
         // Initialize voice items
         initVoiceItems()
 
-        // Setup RecyclerView
+
         voiceAdapter = RecommendedVoiceAdapter(voiceItems) { position ->
             onVoiceItemPlayPauseClick(position)
         }
@@ -100,7 +100,8 @@ class HomeFragment : Fragment() {
         binding.recyclerVoices.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = voiceAdapter
-            setHasFixedSize(true)
+            setHasFixedSize(false)
+            isNestedScrollingEnabled = false
         }
     }
 
@@ -116,7 +117,7 @@ class HomeFragment : Fragment() {
                 description = "本堂主就是第七十七代往生堂堂主",
                 duration = "0:05",
                 avatarResId = R.drawable.hutao,
-                wavFile = R.raw.test,
+                wavFile = R.raw.hutao_1,
                 isPlaying = false
             )
         )
@@ -128,7 +129,7 @@ class HomeFragment : Fragment() {
                 description = "此后，将有群星闪耀，因为我如今来过。",
                 duration = "0:05",
                 avatarResId = R.drawable.elysia,
-                wavFile = R.raw.test,
+                wavFile = R.raw.hutao_1,
                 isPlaying = false
             )
         )
@@ -140,7 +141,7 @@ class HomeFragment : Fragment() {
                 description = "希望你喜欢这五百年属于你的戏份",
                 duration = "0:05",
                 avatarResId = R.drawable.funingna,
-                wavFile = R.raw.test,
+                wavFile = R.raw.hutao_1,
                 isPlaying = false
             )
         )
@@ -152,7 +153,7 @@ class HomeFragment : Fragment() {
                 description = "最好的伙伴",
                 duration = "0:05",
                 avatarResId = R.drawable.paimeng,
-                wavFile = R.raw.test,
+                wavFile = R.raw.hutao_1,
                 isPlaying = false
             )
         )

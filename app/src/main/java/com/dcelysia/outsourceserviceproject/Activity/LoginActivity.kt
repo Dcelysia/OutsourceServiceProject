@@ -42,6 +42,7 @@ class LoginActivity : AppCompatActivity() {
     private val viewModel: LoginViewModel by viewModels()
     private var isVisible = false
 
+
     private val overlay by lazy { binding.loginLoadingOverlay }
 
     override fun onCreate(savedInstanceState: Bundle?) {
