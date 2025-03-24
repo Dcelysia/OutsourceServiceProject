@@ -1,33 +1,24 @@
-package com.example.musicapp.ui.fragment
+package com.dcelysia.outsourceserviceproject.Fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.android.material.appbar.CollapsingToolbarLayout
-import androidx.appcompat.widget.Toolbar
 import com.dcelysia.outsourceserviceproject.R
+import com.dcelysia.outsourceserviceproject.databinding.FragmentAlbumBinding
+import com.dcelysia.outsourceserviceproject.databinding.ItemSongBinding
 import com.google.android.material.appbar.AppBarLayout
 import kotlin.math.abs
 
 class AlbumFragment : Fragment() {
 
-    private lateinit var rvSongList: RecyclerView
-    private lateinit var ivAlbumCover: ImageView
-    private lateinit var ivAlbumBackground: ImageView
-    private lateinit var tvAlbumName: TextView
-    private lateinit var tvArtistName: TextView
-    private lateinit var tvAlbumDesc: TextView
-    private lateinit var collapsingToolbar: CollapsingToolbarLayout
-    private lateinit var toolbar: Toolbar
-    private lateinit var appBarLayout: AppBarLayout
+    private var _binding: FragmentAlbumBinding? = null
+    private val binding get() = _binding!!
 
     private val songAdapter = SongAdapter()
     private var album: Album? = null
@@ -48,14 +39,15 @@ class AlbumFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_album, container, false)
+    ): View {
+        _binding = FragmentAlbumBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initViews(view)
+        initViews()
         setupToolbar()
         setupListeners()
 
@@ -66,19 +58,14 @@ class AlbumFragment : Fragment() {
         }
     }
 
-    private fun initViews(view: View) {
-        rvSongList = view.findViewById(R.id.rvSongList)
-        ivAlbumCover = view.findViewById(R.id.ivAlbumCover)
-        ivAlbumBackground = view.findViewById(R.id.ivAlbumBackground)
-        tvAlbumName = view.findViewById(R.id.tvAlbumName)
-        tvArtistName = view.findViewById(R.id.tvArtistName)
-        tvAlbumDesc = view.findViewById(R.id.tvAlbumDesc)
-        collapsingToolbar = view.findViewById(R.id.collapsingToolbar)
-        toolbar = view.findViewById(R.id.toolbar)
-        appBarLayout = view.findViewById(R.id.appBarLayout)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
+    private fun initViews() {
         // 设置RecyclerView
-        rvSongList.apply {
+        binding.rvSongList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = songAdapter
         }
@@ -86,44 +73,35 @@ class AlbumFragment : Fragment() {
 
     private fun setupToolbar() {
         // 设置标题透明度随滚动变化
-        appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+        binding.appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             val scrollRange = appBarLayout.totalScrollRange
             val offsetRatio = abs(verticalOffset).toFloat() / scrollRange.toFloat()
 
             // 当折叠时显示标题，展开时隐藏标题
             if (offsetRatio > 0.5) {
-                collapsingToolbar.title = album?.name ?: "专辑详情"
+                binding.collapsingToolbar.title = album?.name ?: "专辑详情"
             } else {
-                collapsingToolbar.title = " "
+                binding.collapsingToolbar.title = " "
             }
         })
-
-        // 设置返回按钮动作
-        toolbar.setNavigationOnClickListener {
-            activity?.onBackPressed()
-        }
     }
 
     private fun setupListeners() {
         // 播放全部按钮点击事件
-        view?.findViewById<View>(R.id.btnPlayAll)?.setOnClickListener {
+        binding.btnPlayAll.setOnClickListener {
             Toast.makeText(context, "播放全部", Toast.LENGTH_SHORT).show()
         }
 
         // 收藏按钮点击事件
-        view?.findViewById<View>(R.id.btnFavorite)?.setOnClickListener {
+        binding.btnFavorite.setOnClickListener {
             Toast.makeText(context, "收藏", Toast.LENGTH_SHORT).show()
         }
 
         // 评论按钮点击事件
-        view?.findViewById<View>(R.id.btnComment)?.setOnClickListener {
+        binding.btnComment.setOnClickListener {
             Toast.makeText(context, "评论", Toast.LENGTH_SHORT).show()
         }
 
-        // 更多按钮点击事件
-        view?.findViewById<View>(R.id.btnMore)?.setOnClickListener {
-            Toast.makeText(context, "更多选项", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun loadAlbumData(albumId: String) {
@@ -144,23 +122,23 @@ class AlbumFragment : Fragment() {
 
     private fun updateUI() {
         album?.let { album ->
-            tvAlbumName.text = album.name
-            tvArtistName.text = album.artist
-            tvAlbumDesc.text = album.description
+            binding.tvAlbumName.text = album.name
+            binding.tvArtistName.text = album.artist
+            binding.tvAlbumDesc.text = album.description
 
             // 加载专辑封面
             Glide.with(this)
                 .load(album.coverUrl)
                 .placeholder(R.drawable.album_time)
                 .error(R.drawable.album_time)
-                .into(ivAlbumCover)
+                .into(binding.ivAlbumCover)
 
             // 加载背景图片（模糊效果在XML中通过alpha和overlay实现）
             Glide.with(this)
                 .load(album.coverUrl)
                 .placeholder(R.drawable.album_time)
                 .error(R.drawable.album_time)
-                .into(ivAlbumBackground)
+                .into(binding.ivAlbumBackground)
 
             // 更新歌曲列表
             songAdapter.setSongs(album.songs)
@@ -194,9 +172,8 @@ class AlbumFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_song, parent, false)
-            return SongViewHolder(view)
+            val binding = ItemSongBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return SongViewHolder(binding)
         }
 
         override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
@@ -206,31 +183,22 @@ class AlbumFragment : Fragment() {
 
         override fun getItemCount(): Int = songs.size
 
-        inner class SongViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            private val tvSongIndex: TextView = itemView.findViewById(R.id.tvSongIndex)
-            private val tvSongName: TextView = itemView.findViewById(R.id.tvSongName)
-            private val tvArtistAlbum: TextView = itemView.findViewById(R.id.tvArtistAlbum)
-            private val tvQuality: TextView = itemView.findViewById(R.id.tvQuality)
-            private val ivMV: ImageView = itemView.findViewById(R.id.ivMV)
-            private val ivMoreOptions: ImageView = itemView.findViewById(R.id.ivMoreOptions)
+        inner class SongViewHolder(private val binding: ItemSongBinding) : RecyclerView.ViewHolder(binding.root) {
 
             fun bind(song: Song, index: Int) {
-                tvSongIndex.text = index.toString()
-                tvSongName.text = song.name
-                tvArtistAlbum.text = "${song.artist} - ${song.album}"
+                binding.tvSongIndex.text = index.toString()
+                binding.tvSongName.text = song.name
+                binding.tvArtistAlbum.text = "${song.artist} - ${song.album}"
 
                 // 显示或隐藏高品质音频标签
-                tvQuality.visibility = if (song.isHighQuality) View.VISIBLE else View.GONE
-
-                // 显示或隐藏MV标签
-                ivMV.visibility = if (song.hasMV) View.VISIBLE else View.GONE
+                binding.tvQuality.visibility = if (song.isHighQuality) View.VISIBLE else View.GONE
 
                 // 设置点击事件
-                itemView.setOnClickListener {
+                binding.root.setOnClickListener {
                     Toast.makeText(context, "播放: ${song.name}", Toast.LENGTH_SHORT).show()
                 }
 
-                ivMoreOptions.setOnClickListener {
+                binding.ivMoreOptions.setOnClickListener {
                     Toast.makeText(context, "更多选项: ${song.name}", Toast.LENGTH_SHORT).show()
                 }
             }
