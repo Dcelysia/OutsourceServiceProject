@@ -61,7 +61,6 @@ class RegisterActivity : AppCompatActivity() {
         setVisiblePassword()
         observeViewModel()
 
-
         registerBack.setOnClickListener {
             Route.goLoginForcibly(this@RegisterActivity)
         }

@@ -34,14 +34,24 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/models_recycler"
+    <com.drake.brv.PageRefreshLayout
+        android:id="@+id/page"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:paddingHorizontal="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:stateEnabled="true"
+        tools:context="com.drake.brv.sample.fragment.RefreshFragment">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/models_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.drake.brv.PageRefreshLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

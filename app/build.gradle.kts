@@ -79,13 +79,21 @@ dependencies {
     // navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
-    implementation ("com.github.Dimezis:BlurView:version-2.0.6")
+    implementation("com.github.Dimezis:BlurView:version-2.0.6")
 
     //Room
     implementation("androidx.room:room-runtime:2.5.2")
 
     // Room - 使用 KSP 替代 kapt
     ksp("androidx.room:room-compiler:2.5.2")
+
+    // BRV，尝试一下
+    implementation("com.github.liangjingkanji:BRV:1.6.1")
+
+    implementation("androidx.appcompat:appcompat:1.0.0")
+    implementation("io.github.scwang90:refresh-layout-kernel:3.0.0-alpha")
+    implementation("io.github.scwang90:refresh-header-classics:3.0.0-alpha")
+    implementation("io.github.scwang90:refresh-header-radar:3.0.0-alpha")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
