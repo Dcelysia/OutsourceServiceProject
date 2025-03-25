@@ -1,5 +1,6 @@
 package com.dcelysia.outsourceserviceproject.Fragment
 
+import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
@@ -8,11 +9,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.dcelysia.outsourceserviceproject.Model.Room.database.VoiceModelDataBase
+import com.dcelysia.outsourceserviceproject.Model.Room.entity.VoiceModelEntity
 import com.dcelysia.outsourceserviceproject.R
+import com.dcelysia.outsourceserviceproject.UI.CustomToast
+import com.dcelysia.outsourceserviceproject.Utils.VoiceSynthesisWebsocketUtil
 import com.dcelysia.outsourceserviceproject.databinding.FragmentVoiceSynthesisBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -44,14 +55,22 @@ class VoiceSynthesisFragment : Fragment() {
     private var mediaPlayer: MediaPlayer? = null
     private var isPlaying = false
     private val handler = Handler(Looper.getMainLooper())
+    private val playLayout by lazy { binding.voicePlayLayout }
+    private var modelId = -1
+
+    private val webSocket = VoiceSynthesisWebsocketUtil.getInstance()
+    private var audioFilePath: String? = null
+    private var loadingDialog: AlertDialog? = null
+
+    private val voiceModelDatabase by lazy {
+        VoiceModelDataBase.getInstance(requireContext())
+    }
     private val updateProgressAction = object : Runnable {
         override fun run() {
             updateProgressBar()
             handler.postDelayed(this, 100)
         }
     }
-
-    private val maxDuration = 90000L
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,6 +105,7 @@ class VoiceSynthesisFragment : Fragment() {
         super.onResume()
         val args = VoiceSynthesisFragmentArgs.fromBundle(requireArguments())
         binding.voiceModelChosen.text = args.modelName
+        modelId = args.modelId
     }
 
     private fun setupSpeechRateSeekBar() {
@@ -133,10 +153,11 @@ class VoiceSynthesisFragment : Fragment() {
             stopPlayback()
 
             // Show loading state
-            binding.loadingProgressBar.visibility = View.VISIBLE
+//            binding.loadingProgressBar.visibility = View.VISIBLE
             binding.synthesizeButton.isEnabled = false
+            playLayout.visibility = View.GONE
 
-            // Simulate voice synthesis (in a real app, this would call an API)
+            // 开始语音合成
             synthesizeVoice(text)
         }
     }
@@ -148,114 +169,250 @@ class VoiceSynthesisFragment : Fragment() {
     }
 
     private fun synthesizeVoice(text: String) {
-        // In a real app, you would call your voice synthesis API here
-        // For this example, we'll simulate a delay and then play a sample audio
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            // Hide loading
-            binding.loadingProgressBar.visibility = View.GONE
-            binding.synthesizeButton.isEnabled = true
-
-            // In a real app, you would play the synthesized audio
-            // For this example, we'll just simulate a successful synthesis
-            setupMediaPlayer()
-            startPlayback()
-
-        }, 2000) // Simulate 2 second delay for synthesis
-    }
-
-    private fun setupMediaPlayer() {
-        // Clean up any existing MediaPlayer
-        releaseMediaPlayer()
-
-        // In a real app, you would use the synthesized audio file
-        // For this example, we'll simulate with a placeholder
-        mediaPlayer = MediaPlayer().apply {
+        lifecycleScope.launch {
             try {
-                // This would be replaced with the actual synthesized audio file
-                // setDataSource(context, Uri.parse("your_audio_file_uri"))
-                // prepare()
-
-                // For this example, we'll just set a duration without actual audio
-                // This allows us to simulate playback
-                setOnPreparedListener {
-                    // The progress updating will be handled by our handler
+                val data: VoiceModelEntity? = withContext(Dispatchers.IO) {
+                    voiceModelDatabase.voiceModelDao().getModelByVoiceItemId(modelId)
                 }
 
-                setOnCompletionListener {
-                    stopPlayback()
+                if (data == null) {
+                    CustomToast.showMessage(requireContext(), "未找到模型数据，请稍后重试")
+                    binding.loadingProgressBar.visibility = View.GONE
+                    binding.synthesizeButton.isEnabled = true
+                    return@launch
                 }
-            } catch (e: IOException) {
-                Toast.makeText(
+
+                showLoadingDialog()
+                val speed = speechRates[currentSpeechRateIndex]
+
+                webSocket.synthesisVoice(
                     requireContext(),
-                    "Failed to prepare media player",
-                    Toast.LENGTH_SHORT
-                ).show()
+                    data,
+                    speed,
+                    text,
+                    object : VoiceSynthesisWebsocketUtil.SynthesisCallBack {
+                        override fun onStepStart(step: VoiceSynthesisWebsocketUtil.SynthesisStep) {
+                            requireActivity().runOnUiThread {
+                                val message = when (step) {
+                                    VoiceSynthesisWebsocketUtil.SynthesisStep.LOADING_SOVITS -> "正在加载SoVITS模型..."
+                                    VoiceSynthesisWebsocketUtil.SynthesisStep.LOADING_GPT -> "正在加载GPT模型..."
+                                    VoiceSynthesisWebsocketUtil.SynthesisStep.GENERATE_AUDIO -> "正在生成语音..."
+                                    else -> "正在处理..."
+                                }
+                                updateLoadingProgress(message)
+                            }
+                        }
+
+                        override fun onStepComplete(step: VoiceSynthesisWebsocketUtil.SynthesisStep) {
+                            // 步骤完成时的处理
+                        }
+
+                        override fun onProgress(step: VoiceSynthesisWebsocketUtil.SynthesisStep) {
+                            // 进度更新时的处理
+                        }
+
+                        override fun onComplete(audioFilePath: String) {
+                            requireActivity().runOnUiThread {
+                                hideLoadingDialog()
+                                this@VoiceSynthesisFragment.audioFilePath = audioFilePath
+
+                                binding.loadingProgressBar.visibility = View.GONE
+                                binding.synthesizeButton.isEnabled = true
+                                playLayout.visibility = View.VISIBLE
+
+                                // 设置并开始播放音频
+                                setupMediaPlayer(audioFilePath)
+                            }
+                        }
+
+                        override fun onError(error: String) {
+                            requireActivity().runOnUiThread {
+                                hideLoadingDialog()
+                                Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
+
+                                binding.loadingProgressBar.visibility = View.GONE
+                                binding.synthesizeButton.isEnabled = true
+                            }
+                        }
+                    }
+                )
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    hideLoadingDialog()
+                    Toast.makeText(requireContext(), "发生错误: ${e.message}", Toast.LENGTH_SHORT).show()
+
+                    binding.loadingProgressBar.visibility = View.GONE
+                    binding.synthesizeButton.isEnabled = true
+                }
             }
         }
     }
 
+    private fun hideLoadingDialog() {
+        loadingDialog?.dismiss()
+        loadingDialog = null
+    }
+
+    private fun updateLoadingProgress(message: String) {
+        loadingDialog?.findViewById<TextView>(R.id.messageText)?.text = message
+    }
+
+    private fun showLoadingDialog() {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_loading, null)
+
+        loadingDialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setCancelable(true)  // 允许取消
+            .setNegativeButton("取消") { dialog, _ ->
+                dialog.dismiss()
+                webSocket.cancel()
+            }
+            .create()
+
+        loadingDialog?.show()
+    }
+
+    private fun setupMediaPlayer(audioUrl: String) {
+        // 清理现有的 MediaPlayer
+        releaseMediaPlayer()
+
+        try {
+            // 创建新的 MediaPlayer 实例
+            mediaPlayer = MediaPlayer().apply {
+                // 设置音频属性
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+                )
+
+                // 设置错误监听器
+                setOnErrorListener { _, what, extra ->
+                    val errorMsg = when (what) {
+                        MediaPlayer.MEDIA_ERROR_UNKNOWN -> "未知错误"
+                        MediaPlayer.MEDIA_ERROR_SERVER_DIED -> "服务器错误"
+                        else -> "播放错误 ($what, $extra)"
+                    }
+                    Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT).show()
+                    true
+                }
+
+                // 设置完成监听器
+                setOnCompletionListener {
+                    stopPlayback()
+                }
+
+                // 设置准备完成监听器
+                setOnPreparedListener {
+                    // 准备完成后自动开始播放
+                    startPlayback()
+
+                    // 更新总时长显示
+                    val duration = it.duration
+                    binding.timeTextView.text = String.format(
+                        "%s / %s",
+                        "00:00",
+                        formatTime(duration.toLong())
+                    )
+                }
+
+                // 设置数据源并异步准备
+                setDataSource(audioUrl)
+                prepareAsync()
+            }
+        } catch (e: IOException) {
+            Toast.makeText(
+                requireContext(),
+                "播放器初始化失败: ${e.message}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
     private fun startPlayback() {
-        if (mediaPlayer == null) {
-            setupMediaPlayer()
+        if (mediaPlayer == null && audioFilePath != null) {
+            // 如果MediaPlayer为空但有音频路径，重新初始化
+            setupMediaPlayer(audioFilePath!!)
+            return
         }
 
-        // In a real app, this would actually play audio
-        // mediaPlayer?.start()
+        if (mediaPlayer?.isPlaying == false) {
+            mediaPlayer?.start()
+            isPlaying = true
+            binding.playButton.setIconResource(R.drawable.ic_pause)
 
-        isPlaying = true
-        binding.playButton.setIconResource(R.drawable.ic_pause)
-
-        // Start progress updates
-        handler.removeCallbacks(updateProgressAction)
-        handler.post(updateProgressAction)
+            // 开始进度更新
+            handler.removeCallbacks(updateProgressAction)
+            handler.post(updateProgressAction)
+        }
     }
 
     private fun pausePlayback() {
-        // mediaPlayer?.pause()
-        isPlaying = false
-        binding.playButton.setIconResource(R.drawable.ic_play)
+        if (mediaPlayer?.isPlaying == true) {
+            mediaPlayer?.pause()
+            isPlaying = false
+            binding.playButton.setIconResource(R.drawable.ic_play)
 
-        // Stop progress updates
-        handler.removeCallbacks(updateProgressAction)
+            // 停止进度更新
+            handler.removeCallbacks(updateProgressAction)
+        }
     }
 
     private fun stopPlayback() {
-        // mediaPlayer?.stop()
-        // mediaPlayer?.seekTo(0)
-        isPlaying = false
-        binding.playButton.setIconResource(R.drawable.ic_play)
+        try {
+            if (mediaPlayer != null) {
+                if (mediaPlayer?.isPlaying == true) {
+                    mediaPlayer?.stop()
+                }
+                mediaPlayer?.seekTo(0)
+                isPlaying = false
+                binding.playButton.setIconResource(R.drawable.ic_play)
 
-        // Reset progress
-        binding.progressIndicator.progress = 0
-        binding.timeTextView.text = "00:00 / 01:30"
+                // 重置进度
+                binding.progressIndicator.progress = 0
 
-        // Stop progress updates
-        handler.removeCallbacks(updateProgressAction)
+                // 更新时间显示
+                val duration = mediaPlayer?.duration ?: 0
+                binding.timeTextView.text = String.format(
+                    "%s / %s",
+                    "00:00",
+                    formatTime(duration.toLong())
+                )
+            } else {
+                // 如果没有MediaPlayer，只重置UI
+                binding.progressIndicator.progress = 0
+                binding.timeTextView.text = "00:00 / 00:00"
+            }
+
+            // 停止进度更新
+            handler.removeCallbacks(updateProgressAction)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun updateProgressBar() {
-        if (!isPlaying) return
+        if (!isPlaying || mediaPlayer == null) return
 
-        // In a real app, this would be the actual position of the MediaPlayer
-        // val currentPosition = mediaPlayer?.currentPosition ?: 0
+        try {
+            val currentPosition = mediaPlayer?.currentPosition ?: 0
+            val duration = mediaPlayer?.duration ?: 0
 
-        // For this example, we'll simulate progress based on time
-        val elapsedTime = System.currentTimeMillis() % maxDuration
-        val progress = (elapsedTime * 100 / maxDuration).toInt()
+            if (duration > 0) {
+                // 计算进度百分比
+                val progress = (currentPosition * 100 / duration)
+                binding.progressIndicator.progress = progress
 
-        binding.progressIndicator.progress = progress
-
-        // Update time text
-        binding.timeTextView.text = String.format(
-            "%s / %s",
-            formatTime(elapsedTime),
-            formatTime(maxDuration)
-        )
-
-        // If we reach the end, stop playback
-        if (elapsedTime >= maxDuration) {
-            stopPlayback()
+                // 更新时间文本
+                binding.timeTextView.text = String.format(
+                    "%s / %s",
+                    formatTime(currentPosition.toLong()),
+                    formatTime(duration.toLong())
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -266,13 +423,34 @@ class VoiceSynthesisFragment : Fragment() {
     }
 
     private fun releaseMediaPlayer() {
-        mediaPlayer?.release()
-        mediaPlayer = null
+        try {
+            mediaPlayer?.apply {
+                if (isPlaying) {
+                    stop()
+                }
+                reset()
+                release()
+            }
+            mediaPlayer = null
+            isPlaying = false
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // 暂停播放
+        if (mediaPlayer?.isPlaying == true) {
+            pausePlayback()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(updateProgressAction)
         releaseMediaPlayer()
+        webSocket.cancel()
+        hideLoadingDialog()
     }
 }

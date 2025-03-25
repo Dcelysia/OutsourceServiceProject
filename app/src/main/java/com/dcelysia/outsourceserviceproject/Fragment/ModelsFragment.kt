@@ -9,8 +9,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dcelysia.outsourceserviceproject.Model.Room.database.VoiceModelDataBase
+import com.dcelysia.outsourceserviceproject.Model.Room.entity.VoiceModelEntity
 import com.dcelysia.outsourceserviceproject.Model.data.response.VoiceItem
 import com.dcelysia.outsourceserviceproject.R
 import com.dcelysia.outsourceserviceproject.adapter.ModelsAdapter
@@ -20,6 +23,9 @@ import com.dcelysia.outsourceserviceproject.databinding.RecyclerTextTitleBinding
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
+import com.tencent.mmkv.MMKV
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ModelsFragment : Fragment() {
     private lateinit var binding: FragmentModelsBinding
@@ -27,6 +33,10 @@ class ModelsFragment : Fragment() {
     private val voiceItems = mutableListOf<Any>()
     private val recyclerView by lazy { binding.modelsRecycler }
     private val page by lazy { binding.page }
+    private val mmkv by lazy { MMKV.mmkvWithID("models_fragment") }
+    private val firstInit = "is_first_init"
+
+    private val database by lazy { VoiceModelDataBase.getInstance(requireContext()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +57,23 @@ class ModelsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initVoiceItems()
         setRecyclerView()
+//        if (!mmkv.getBoolean(firstInit, false)) {
+            lifecycleScope.launch {
+                launch(Dispatchers.IO) {
+                    database.voiceModelDao().update(
+                        VoiceModelEntity(
+                            id = 1,
+                            voiceItemId = 1,
+                            pthModelFile = "SoVITS_weights_v3/hutao_e2_s456_l32.pth",
+                            ckptModelFile = "GPT_weights_v3/hutao-e15.ckpt",
+                            referenceWavPath = "/home/top/hdd/qs/TEMP/official/hutao_reference.wav",
+                            referenceWavText = "我说白术，你不会看不出来吧？难不成你师父，忘了教你这门功夫？"
+                        )
+                    )
+                }
+//            }
+//            mmkv.putBoolean(firstInit, true)
+        }
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
@@ -205,6 +232,7 @@ class ModelsFragment : Fragment() {
                         findView<CardView>(R.id.all_model).setOnClickListener {
                             findNavController().navigate(
                                 ModelsFragmentDirections.actionModelsFragmentToVoiceSynthesisFragment(
+                                    modelId = item.id,
                                     modelName = item.title
                                 )
                             )
