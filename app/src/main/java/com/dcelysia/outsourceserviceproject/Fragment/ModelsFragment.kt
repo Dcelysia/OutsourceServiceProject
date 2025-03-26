@@ -60,7 +60,7 @@ class ModelsFragment : Fragment() {
 //        if (!mmkv.getBoolean(firstInit, false)) {
             lifecycleScope.launch {
                 launch(Dispatchers.IO) {
-                    database.voiceModelDao().update(
+                    database.voiceModelDao().insert(
                         VoiceModelEntity(
                             id = 1,
                             voiceItemId = 1,
@@ -243,11 +243,11 @@ class ModelsFragment : Fragment() {
             models = voiceItems
         }
         page.onRefresh {
-            postDelayed({ finishRefresh() }, 800)
+            postDelayed({ finishRefresh() }, 400)
         }.autoRefresh()
 
         page.onLoadMore {
-            postDelayed({ finishLoadMore() }, 800)
+            postDelayed({ finishLoadMore() }, 400)
         }
 
 //        recyclerView.adapter = ModelsAdapter(voiceItems) { msg ->

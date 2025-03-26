@@ -239,11 +239,23 @@ class VoiceSynthesisFragment : Fragment() {
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     hideLoadingDialog()
-                    Toast.makeText(requireContext(), "发生错误: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "发生错误: ${e.message}", Toast.LENGTH_SHORT)
+                        .show()
 
                     binding.loadingProgressBar.visibility = View.GONE
                     binding.synthesizeButton.isEnabled = true
                 }
+            }
+        }
+    }
+
+    fun View.setDebounceClickListener(debounceTime: Long = 1000, action: (View) -> Unit) {
+        var lastClickTime = 0L
+        setOnClickListener { view ->
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastClickTime > debounceTime) {
+                lastClickTime = currentTime
+                action(view)
             }
         }
     }
