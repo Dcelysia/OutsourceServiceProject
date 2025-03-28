@@ -4,7 +4,8 @@
         <!-- Customize your light theme here. -->
         <item name="colorPrimaryDark">@color/black</item>
         <item name="checkboxStyle">@style/Widget.AppCompat.CompoundButton.CheckBox</item>
-    </style>
+        <item name="android:windowBackground">@color/white</item>
+    </style>`
 
     <style name="Theme.OutsourceServiceProject" parent="Base.Theme.OutsourceServiceProject" />
 </resources>

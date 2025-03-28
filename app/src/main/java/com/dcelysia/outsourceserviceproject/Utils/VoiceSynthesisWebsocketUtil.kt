@@ -203,8 +203,8 @@ class VoiceSynthesisWebsocketUtil private constructor() {
                     val json = JSONObject(text)
                     val status = json.optString("status")
 
-                    if (status == "success" && json.has("audio_path")) {
-                        val serverPath = json.getString("audio_path")
+                    if (status == "success" && json.has("result")) {
+                        val serverPath = json.getString("result")
                         webSocket.cancel()
                         callback.onComplete(AUDIO_PATH_PRE + serverPath)
                     } else if (status == "processing") {

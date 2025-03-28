@@ -26,11 +26,6 @@
             app:popExitAnim="@anim/fade_out" />
     </fragment>
 
-    <fragment
-        android:id="@+id/storeFragment"
-        android:name="com.dcelysia.outsourceserviceproject.Fragment.StoreFragment"
-        android:label="fragment_store"
-        tools:layout="@layout/fragment_store" />
 
     <fragment
         android:id="@+id/albumFragment"
@@ -106,4 +101,5 @@
             android:defaultValue=""
             app:argType="string" />
     </fragment>
+
 </navigation>
