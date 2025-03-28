@@ -60,4 +60,8 @@ class LoginViewModel : ViewModel() {
 //            _loginState.emit(Resource.Success(LoginAndRegisterResponse("200", "ok", null)))
         }
     }
+
+    fun  getAccount(): MutableStateFlow<String> {
+        return _account
+    }
 }

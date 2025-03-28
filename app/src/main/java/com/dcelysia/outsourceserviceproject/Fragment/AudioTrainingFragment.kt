@@ -34,11 +34,17 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import androidx.core.net.toUri
+import com.dcelysia.outsourceserviceproject.Model.data.response.UserInfo
+import com.dcelysia.outsourceserviceproject.Utils.mmkv.UserInfoManager
+import com.dcelysia.outsourceserviceproject.ViewModel.PersonProfileViewModel
+import com.dcelysia.outsourceserviceproject.Model.Room.database.VoiceItemDatabase
+import com.dcelysia.outsourceserviceproject.Model.Room.entity.VoiceItemEntity
 
 class AudioTrainingFragment : Fragment() {
     private val binding by lazy(LazyThreadSafetyMode.NONE) {
         FragmentAudioTrainBinding.inflate(layoutInflater)
     }
+    private val personProfileViewModel by lazy { PersonProfileViewModel() }
 
     private var originalMediaPlayer: MediaPlayer? = null
     private var referenceMediaPlayer: MediaPlayer? = null
@@ -382,9 +388,10 @@ class AudioTrainingFragment : Fragment() {
         isTraining = true
         showLoadingDialog()
         updateLoadingProgress("准备开始训练...")
-
+        val username = UserInfoManager.cacheBaseUserProfile!!.account
+        Log.d("startTraining", "startTraining: $username")
         webSocket.startProcess(
-            username = "dcelysia",
+            username = username,
             modelName = modelName,
             audioUri = originalAudioUri!!,
             context = requireContext(),
@@ -446,24 +453,38 @@ class AudioTrainingFragment : Fragment() {
                                 // 可以添加取消上传的逻辑，如果WebSocket API支持的话
                             }
                         }
-                            Log.d("Result",result.isSuccess.toString());
 
                             // 切换回主线程更新UI
                             withContext(Dispatchers.Main) {
                                 if (result.isSuccess) {
                                     val referenceWavPath = result.getOrNull()
+
                                     // 保存到数据库，让 id 自增
-                                    val voiceModel = VoiceModelEntity(
-                                        voiceItemId = 0, // 或者直接使用默认值
-                                        pthModelFile = "GPT_weights_v3/${username}_${modelName}-e15.ckpt",
-                                        ckptModelFile = "SoVITS_weights_v3/${username}_${modelName}_e8_s40_l32.pth",
-                                        referenceWavPath = referenceWavPath ?: "",
-                                        referenceWavText = trainingText
+                                    val voiceItem = VoiceItemEntity(
+                                        id = 0,
+                                        title = modelName,
+                                        description = "用户自定义声音模型",
+                                        avatarResId = R.drawable.paimeng,
+                                        wavFile = R.raw.test
                                     )
 
                                     // 在后台保存
                                     launch(Dispatchers.IO) {
                                         try {
+                                            // 先保存 VoiceItemEntity
+                                            val voiceItemId = VoiceItemDatabase.getInstance(requireContext())
+                                                .viewItemDao()
+                                                .insert(voiceItem)
+
+                                            // 然后创建并保存 VoiceModelEntity
+                                            val voiceModel = VoiceModelEntity(
+                                                voiceItemId = voiceItemId.toInt(),
+                                                pthModelFile = "GPT_weights_v3/${username}_${modelName}-e15.ckpt",
+                                                ckptModelFile = "SoVITS_weights_v3/${username}_${modelName}_e8_s40_l32.pth",
+                                                referenceWavPath = referenceWavPath ?: "",
+                                                referenceWavText = trainingText
+                                            )
+
                                             VoiceModelDataBase.getInstance(requireContext())
                                                 .voiceModelDao()
                                                 .insert(voiceModel)

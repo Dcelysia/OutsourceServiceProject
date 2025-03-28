@@ -83,6 +83,7 @@ dependencies {
 
     //Room
     implementation("androidx.room:room-runtime:2.5.2")
+    implementation("androidx.room:room-ktx:2.5.2")
 
     // Room - 使用 KSP 替代 kapt
     ksp("androidx.room:room-compiler:2.5.2")

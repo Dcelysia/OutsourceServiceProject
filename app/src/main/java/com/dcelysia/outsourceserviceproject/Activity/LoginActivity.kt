@@ -17,11 +17,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.dcelysia.outsourceserviceproject.Model.data.response.BaseUserProfile
 import com.dcelysia.outsourceserviceproject.core.Route
 import com.dcelysia.outsourceserviceproject.Network.Resource
 import com.dcelysia.outsourceserviceproject.R
 import com.dcelysia.outsourceserviceproject.UI.CustomToast
 import com.dcelysia.outsourceserviceproject.Utils.mmkv.LoginInfoManager
+import com.dcelysia.outsourceserviceproject.Utils.mmkv.UserInfoManager
 import com.dcelysia.outsourceserviceproject.ViewModel.LoginViewModel
 import com.dcelysia.outsourceserviceproject.databinding.ActivityLoginBinding
 import kotlinx.coroutines.launch
@@ -205,6 +207,11 @@ class LoginActivity : AppCompatActivity() {
                                 CustomToast.showMessage(this@LoginActivity, "登陆成功！")
                                 hideOverlay()
                                 Route.goHome(this@LoginActivity)
+                                val baseUserProfile = BaseUserProfile(
+                                    account = viewModel.getAccount().toString(),
+                                    avatarUrl = "http://sql7h4hw3.hn-bkt.clouddn.com/upload/images/6a89817e-3f7b-445b-8231-2eb7e8f3b291.jpg"
+                                )
+                                UserInfoManager.cacheBaseUserProfile = baseUserProfile
                                 finish()
                             }
                             null -> {}

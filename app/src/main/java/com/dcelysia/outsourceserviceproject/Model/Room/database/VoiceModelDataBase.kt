@@ -8,7 +8,7 @@ import com.dcelysia.outsourceserviceproject.Model.Room.dao.VoiceModelDao
 import com.dcelysia.outsourceserviceproject.Model.Room.entity.VoiceModelEntity
 
 
-@Database(entities = [VoiceModelEntity::class], version = 1)
+@Database(entities = [VoiceModelEntity::class], version = 1, exportSchema = false)
 abstract class VoiceModelDataBase : RoomDatabase() {
     abstract fun voiceModelDao(): VoiceModelDao
 

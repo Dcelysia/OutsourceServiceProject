@@ -12,8 +12,10 @@ import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
+import com.dcelysia.outsourceserviceproject.ViewModel.PersonProfileViewModel
 import com.dcelysia.outsourceserviceproject.core.Route
 import com.dcelysia.outsourceserviceproject.databinding.ActivityMainBinding
+import com.tencent.mmkv.MMKV
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,6 +55,8 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             updateMiniPlayerVisibility(destination)
         }
+
+
     }
 
     /**
