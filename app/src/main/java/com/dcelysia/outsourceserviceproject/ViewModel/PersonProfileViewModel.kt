@@ -18,9 +18,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 class PersonProfileViewModel : ViewModel() {
-    init {
-        loadUserProfile()
-    }
+    private val repository = UserProfileRepository()
 
     private val _personProfileAvatar =
         MutableStateFlow("http://sql7h4hw3.hn-bkt.clouddn.com/upload/images/6a89817e-3f7b-445b-8231-2eb7e8f3b291.jpg")
@@ -33,11 +31,13 @@ class PersonProfileViewModel : ViewModel() {
     private val _uploadResult = MutableStateFlow<Resource<FileAvatarResponse>?>(null)
     val uploadResult = _uploadResult.asStateFlow()
 
-    private val repository by lazy { UserProfileRepository() }
-
     // 用户更新相关状态
     private val _updateResponse = MutableStateFlow<Resource<UserProfileResponse>?>(null)
     val updateResponse = _updateResponse.asStateFlow()
+
+    init {
+        loadUserProfile()
+    }
 
     fun updateUserProfile(userProfile: UpdateUserProfile) {
         viewModelScope.launch {
@@ -63,7 +63,7 @@ class PersonProfileViewModel : ViewModel() {
         }
     }
 
-    private fun loadUserProfile() {
+    fun loadUserProfile() {
         viewModelScope.launch {
             val cacheBaseUserProfile = UserInfoManager.cacheUserProfile
             if (cacheBaseUserProfile == null) {
@@ -88,5 +88,4 @@ class PersonProfileViewModel : ViewModel() {
             }
         }
     }
-
 }

@@ -7,25 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.dcelysia.outsourceserviceproject.Model.Room.database.VoiceModelDataBase
+import com.dcelysia.outsourceserviceproject.Model.Room.database.VoiceItemDatabase
 import com.dcelysia.outsourceserviceproject.Model.Room.entity.VoiceModelEntity
+import com.dcelysia.outsourceserviceproject.Model.Room.entity.VoiceItemEntity
 import com.dcelysia.outsourceserviceproject.Model.data.response.VoiceItem
 import com.dcelysia.outsourceserviceproject.R
-import com.dcelysia.outsourceserviceproject.adapter.ModelsAdapter
 import com.dcelysia.outsourceserviceproject.databinding.FragmentModelsBinding
-import com.dcelysia.outsourceserviceproject.databinding.ItemRecommendedVoiceBinding
-import com.dcelysia.outsourceserviceproject.databinding.RecyclerTextTitleBinding
 import com.drake.brv.utils.linear
-import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
-import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ModelsFragment : Fragment() {
     private lateinit var binding: FragmentModelsBinding
@@ -33,10 +29,9 @@ class ModelsFragment : Fragment() {
     private val voiceItems = mutableListOf<Any>()
     private val recyclerView by lazy { binding.modelsRecycler }
     private val page by lazy { binding.page }
-    private val mmkv by lazy { MMKV.mmkvWithID("models_fragment") }
-    private val firstInit = "is_first_init"
 
-    private val database by lazy { VoiceModelDataBase.getInstance(requireContext()) }
+    private val voiceModelDatabase by lazy { VoiceModelDataBase.getInstance(requireContext()) }
+    private val voiceItemDatabase by lazy { VoiceItemDatabase.getInstance(requireContext()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,148 +47,66 @@ class ModelsFragment : Fragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initVoiceItems()
+        loadDataFromDatabase()
         setRecyclerView()
-//        if (!mmkv.getBoolean(firstInit, false)) {
-            lifecycleScope.launch {
-                launch(Dispatchers.IO) {
-                    database.voiceModelDao().insert(
-                        VoiceModelEntity(
-                            id = 1,
-                            voiceItemId = 1,
-                            pthModelFile = "SoVITS_weights_v3/hutao_e2_s456_l32.pth",
-                            ckptModelFile = "GPT_weights_v3/hutao-e15.ckpt",
-                            referenceWavPath = "/home/top/hdd/qs/TEMP/official/hutao_reference.wav",
-                            referenceWavText = "我说白术，你不会看不出来吧？难不成你师父，忘了教你这门功夫？"
-                        )
-                    )
-                }
-//            }
-//            mmkv.putBoolean(firstInit, true)
-        }
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
     }
 
-    private fun initVoiceItems() {
-        // Clear existing items if any
-        voiceItems.clear()
-
-        voiceItems.add("推荐")
-        // Add sample voice items
-        voiceItems.add(
-            VoiceItem(
-                id = 1,
-                title = "胡桃",
-                description = "本堂主就是第七十七代往生堂堂主",
-                duration = "0:05",
-                avatarResId = R.drawable.hutao,
-                wavFile = R.raw.hutao_1,
-                isPlaying = false
-            )
-        )
-
-        voiceItems.add(
-            VoiceItem(
-                id = 2,
-                title = "爱莉希雅",
-                description = "此后，将有群星闪耀，因为我如今来过。",
-                duration = "0:05",
-                avatarResId = R.drawable.elysia,
-                wavFile = R.raw.test,
-                isPlaying = false
-            )
-        )
-
-        voiceItems.add(
-            VoiceItem(
-                id = 3,
-                title = "芙宁娜",
-                description = "希望你喜欢这五百年属于你的戏份",
-                duration = "0:05",
-                avatarResId = R.drawable.funingna,
-                wavFile = R.raw.test,
-                isPlaying = false
-            )
-        )
-
-        voiceItems.add(
-            VoiceItem(
-                id = 3,
-                title = "派蒙",
-                description = "最好的伙伴",
-                duration = "0:05",
-                avatarResId = R.drawable.paimeng,
-                wavFile = R.raw.test,
-                isPlaying = false
-            )
-        )
-
-        voiceItems.add("我的")
-
-        voiceItems.add(
-            VoiceItem(
-                id = 3,
-                title = "柏神",
-                description = "宁启睿的主人",
-                duration = "0:05",
-                avatarResId = R.drawable.paimeng,
-                wavFile = R.raw.test,
-                isPlaying = false
-            )
-        )
-
-        voiceItems.add(
-            VoiceItem(
-                id = 3,
-                title = "柏神",
-                description = "宁启睿的主人",
-                duration = "0:05",
-                avatarResId = R.drawable.paimeng,
-                wavFile = R.raw.test,
-                isPlaying = false
-            )
-        )
-
-        voiceItems.add(
-            VoiceItem(
-                id = 3,
-                title = "柏神",
-                description = "宁启睿的主人",
-                duration = "0:05",
-                avatarResId = R.drawable.paimeng,
-                wavFile = R.raw.test,
-                isPlaying = false
-            )
-        )
-
-        voiceItems.add(
-            VoiceItem(
-                id = 3,
-                title = "柏神",
-                description = "宁启睿的主人",
-                duration = "0:05",
-                avatarResId = R.drawable.paimeng,
-                wavFile = R.raw.test,
-                isPlaying = false
-            )
-        )
-
-        voiceItems.add(
-            VoiceItem(
-                id = 3,
-                title = "柏神",
-                description = "宁启睿的主人",
-                duration = "0:05",
-                avatarResId = R.drawable.paimeng,
-                wavFile = R.raw.test,
-                isPlaying = false
-            )
-        )
+    private fun loadDataFromDatabase() {
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                // 获取所有语音项目
+                val voiceItems = voiceItemDatabase.viewItemDao().getAllModels()
+                
+                // 清空现有数据
+                this@ModelsFragment.voiceItems.clear()
+                
+                // 添加"推荐"标题
+                this@ModelsFragment.voiceItems.add("推荐")
+                
+                // 添加推荐语音项目
+                voiceItems.forEach { voiceItem ->
+                    this@ModelsFragment.voiceItems.add(
+                        VoiceItem(
+                            id = voiceItem.id,
+                            title = voiceItem.title,
+                            description = voiceItem.description,
+                            duration = "0:05", // 这个值可能需要从其他地方获取
+                            avatarResId = voiceItem.avatarResId,
+                            wavFile = voiceItem.wavFile,
+                            isPlaying = false
+                        )
+                    )
+                }
+                
+                // 添加"我的"标题
+                this@ModelsFragment.voiceItems.add("我的")
+                
+                // 获取用户自定义的语音模型
+                val userModels = voiceModelDatabase.voiceModelDao().getAllModels()
+                userModels.forEach { model ->
+                    // 找到对应的语音项目
+                    val associatedVoiceItem = voiceItems.find { it.id == model.voiceItemId }
+                    if (associatedVoiceItem != null) {
+                        this@ModelsFragment.voiceItems.add(
+                            VoiceItem(
+                                id = associatedVoiceItem.id,
+                                title = associatedVoiceItem.title,
+                                description = associatedVoiceItem.description,
+                                duration = "0:05", // 这个值可能需要从其他地方获取
+                                avatarResId = associatedVoiceItem.avatarResId,
+                                wavFile = associatedVoiceItem.wavFile,
+                                isPlaying = false
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun setRecyclerView() {
@@ -243,22 +156,13 @@ class ModelsFragment : Fragment() {
             models = voiceItems
         }
         page.onRefresh {
+            loadDataFromDatabase()
             postDelayed({ finishRefresh() }, 400)
         }.autoRefresh()
 
         page.onLoadMore {
             postDelayed({ finishLoadMore() }, 400)
         }
-
-//        recyclerView.adapter = ModelsAdapter(voiceItems) { msg ->
-//            findNavController().navigate(
-//                ModelsFragmentDirections.actionModelsFragmentToVoiceSynthesisFragment(
-//                    modelName = msg
-//                )
-//            )
-//        }
-//        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
     }
 
     companion object {

@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.dcelysia.outsourceserviceproject.Model.Room.dao.VoiceItemDao
 import com.dcelysia.outsourceserviceproject.Model.Room.entity.VoiceItemEntity
 
-@Database(entities = [VoiceItemEntity::class], version = 1)
+@Database(entities = [VoiceItemEntity::class], version = 1, exportSchema = false)
 abstract class VoiceItemDatabase : RoomDatabase() {
     abstract fun viewItemDao(): VoiceItemDao
 

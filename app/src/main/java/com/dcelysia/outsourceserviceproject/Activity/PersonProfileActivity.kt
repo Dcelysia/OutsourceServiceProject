@@ -34,8 +34,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.dcelysia.outsourceserviceproject.Model.data.response.UpdateUserProfile
-import com.dcelysia.outsourceserviceproject.Model.data.response.UserProfile
-import com.dcelysia.outsourceserviceproject.Model.repository.UserProfileRepository
 import com.dcelysia.outsourceserviceproject.Network.Resource
 import com.dcelysia.outsourceserviceproject.R
 import com.dcelysia.outsourceserviceproject.UI.CustomToast
@@ -45,7 +43,6 @@ import com.dcelysia.outsourceserviceproject.ViewModel.PersonProfileViewModel
 import com.dcelysia.outsourceserviceproject.databinding.ActivityPersonProfileBinding
 import com.yalantis.ucrop.UCrop
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File

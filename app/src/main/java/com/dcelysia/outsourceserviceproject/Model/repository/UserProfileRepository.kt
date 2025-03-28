@@ -1,6 +1,7 @@
 package com.dcelysia.outsourceserviceproject.Model.repository
 
 import android.net.Uri
+import android.util.Log
 import com.dcelysia.outsourceserviceproject.Model.data.request.AccountSecurityRequest
 import com.dcelysia.outsourceserviceproject.Model.data.request.UploadAvatarUriRequest
 import com.dcelysia.outsourceserviceproject.Model.data.response.ErrorResponse

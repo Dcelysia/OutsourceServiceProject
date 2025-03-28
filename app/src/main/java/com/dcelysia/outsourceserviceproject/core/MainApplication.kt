@@ -33,8 +33,8 @@ class MainApplication : Application() {
 
         lateinit var appContext: Context
 
-        //        val ip = "http://124.71.12.148:8080" // 正式服务器ip
-        val ip = "http://10.0.2.2:8080" // 本地测试ip
+                val ip = "http://124.71.12.148:8080" // 正式服务器ip
+//        val ip = "http://10.0.2.2:8080" // 本地测试ip
     }
 
     override fun onCreate() {

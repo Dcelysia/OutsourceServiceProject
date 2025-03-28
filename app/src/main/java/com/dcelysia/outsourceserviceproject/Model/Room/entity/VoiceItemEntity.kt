@@ -11,7 +11,6 @@ data class VoiceItemEntity(
     val id: Int,
     val title: String,
     val description: String,
-    val duration: String,
     val avatarResId: Int,
     val wavFile: Int
 )

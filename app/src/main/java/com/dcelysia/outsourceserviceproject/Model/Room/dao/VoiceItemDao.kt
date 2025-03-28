@@ -17,7 +17,7 @@ interface VoiceItemDao {
     fun getAllModels(): List<VoiceItemEntity>
 
     @Insert
-    fun insert(voiceItem: VoiceItemEntity)
+    suspend fun insert(voiceItem: VoiceItemEntity): Long
 
     @Update
     fun update(voiceItem: VoiceItemEntity)

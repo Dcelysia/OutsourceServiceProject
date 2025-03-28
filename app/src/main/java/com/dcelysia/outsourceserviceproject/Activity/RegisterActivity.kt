@@ -37,6 +37,7 @@ class RegisterActivity : AppCompatActivity() {
     private val registerEditAccount: EditText by lazy { binding.registerEditAccount }
     private val registerEditPassword1: EditText by lazy { binding.registerEditPassword1 }
     private val registerEditPassword2: EditText by lazy { binding.registerEditPassword2 }
+    private val registerPassword1Visible: ImageView by lazy { binding.registerPassword1Visible }
     private val registerPassword2Visible: ImageView by lazy { binding.registerPassword2Visible }
     private val register by lazy { binding.registerButton }
     private val registerBack by lazy { binding.registerBackLogin }
@@ -68,14 +69,45 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun register() {
+        val password1 = registerEditPassword1.text.toString()
+        val password2 = registerEditPassword2.text.toString()
+        
+        if (password1 != password2) {
+            CustomToast.showMessage(this, "两次输入的密码不一致")
+            return
+        }
+        
+        if (password1.length < 6) {
+            CustomToast.showMessage(this, "密码长度不能少于6位")
+            return
+        }
+        
         viewModel.register()
     }
 
     private fun setVisiblePassword() {
+        // 第一个密码框的显示/隐藏
+        registerPassword1Visible.setOnClickListener {
+            isVisible1 = !isVisible1
+            updatePasswordVisibility(registerEditPassword1, registerPassword1Visible, isVisible1)
+        }
+
+        // 第二个密码框的显示/隐藏
         registerPassword2Visible.setOnClickListener {
             isVisible2 = !isVisible2
-            viewModel.updatePassword2Visible(isVisible2)
+            updatePasswordVisibility(registerEditPassword2, registerPassword2Visible, isVisible2)
         }
+    }
+
+    private fun updatePasswordVisibility(editText: EditText, imageView: ImageView, isVisible: Boolean) {
+        if (isVisible) {
+            editText.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            imageView.setImageResource(R.drawable.zhengyan)
+        } else {
+            editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            imageView.setImageResource(R.drawable.biyan)
+        }
+        editText.setSelection(editText.text.length)
     }
 
     private fun showOverlay() {
@@ -110,21 +142,6 @@ class RegisterActivity : AppCompatActivity() {
                 }
 
                 launch {
-                    viewModel.isPassword2Visible.collect { isVisible2 ->
-                        if (isVisible2) {
-                            registerEditPassword2.inputType =
-                                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                            registerPassword2Visible.setImageResource(R.drawable.zhengyan)
-                        } else {
-                            registerEditPassword2.inputType =
-                                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                            registerPassword2Visible.setImageResource(R.drawable.biyan)
-                        }
-                        registerEditPassword2.setSelection(registerEditPassword2.text.length)
-                    }
-                }
-
-                launch {
                     viewModel.registerState.collect { state ->
                         Log.d(TAG, "当前state：${state}")
                         when (state) {
@@ -152,7 +169,6 @@ class RegisterActivity : AppCompatActivity() {
                         }
                     }
                 }
-
             }
         }
     }
@@ -173,6 +189,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun setPasswordEdit() {
+        // 第一个密码框的监听
         registerEditPassword1.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -182,10 +199,13 @@ class RegisterActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) {
                 viewModel.updatePassword1(s?.toString() ?: "")
+                // 当第一个密码改变时，检查两个密码是否一致
+                checkPasswordsMatch()
             }
         })
         inputFilterSeverity(registerEditPassword1)
 
+        // 第二个密码框的监听
         registerEditPassword2.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -195,11 +215,25 @@ class RegisterActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) {
                 viewModel.updatePassword2(s?.toString() ?: "")
+                // 当第二个密码改变时，检查两个密码是否一致
+                checkPasswordsMatch()
             }
         })
         inputFilterSeverity(registerEditPassword2)
     }
 
+    private fun checkPasswordsMatch() {
+        val password1 = registerEditPassword1.text.toString()
+        val password2 = registerEditPassword2.text.toString()
+        
+        if (password1.isNotEmpty() && password2.isNotEmpty()) {
+            if (password1 != password2) {
+                registerEditPassword2.error = "两次输入的密码不一致"
+            } else {
+                registerEditPassword2.error = null
+            }
+        }
+    }
 
     private fun inputFilterSeverity(editText: EditText) {
         val inputFilter = InputFilter { source, _, _, _, _, _ ->
@@ -211,7 +245,6 @@ class RegisterActivity : AppCompatActivity() {
         editText.filters = arrayOf(inputFilter)
     }
 
-
     private fun inputFilterSimple(editText: EditText) {
         val inputFilter = InputFilter { source, _, _, _, _, _ ->
             val regex = Regex("^[a-zA-Z0-9]*$")
@@ -219,5 +252,4 @@ class RegisterActivity : AppCompatActivity() {
         }
         editText.filters = arrayOf(inputFilter)
     }
-
 }

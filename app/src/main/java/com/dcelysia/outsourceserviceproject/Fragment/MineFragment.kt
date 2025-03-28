@@ -5,8 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.dcelysia.outsourceserviceproject.ViewModel.MineViewModel
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.dcelysia.outsourceserviceproject.Model.data.response.UserProfile
+import com.dcelysia.outsourceserviceproject.Network.Resource
+import com.dcelysia.outsourceserviceproject.Utils.mmkv.UserInfoManager
+import com.dcelysia.outsourceserviceproject.ViewModel.PersonProfileViewModel
+import com.dcelysia.outsourceserviceproject.core.Route
 import com.dcelysia.outsourceserviceproject.databinding.FragmentMineBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,7 +35,7 @@ class MineFragment : Fragment() {
 //    private val mineAccount by lazy { binding.mineAccount }
 //    private val topMineConfig by lazy { binding.topMineConfig }
 //    private val topUserConfig by lazy { binding.topMineConfig }
-    private val viewModel by lazy { MineViewModel() }
+    private val viewModel by lazy { PersonProfileViewModel() }
 
 //    private val accountSecurity by lazy { binding.accountSecurity }
 
@@ -47,43 +55,85 @@ class MineFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentMineBinding.inflate(layoutInflater, container, false)
-//        topUserConfig.setOnClickListener {
-//            Route.goPersonProfile(requireContext())
-//        }
-//        mineAvatar.setOnClickListener { Route.goPersonProfile(requireContext()) }
-//        accountSecurity.setOnClickListener { Route.goAccountSecurity(requireContext()) }
-//        observeUserInfo()
+        
+        // 设置点击事件
+        setupClickListeners()
+        
+        // 观察用户信息
+        observeUserInfo()
+        
         return binding.root
     }
 
-//    private fun observeUserInfo() {
-//        lifecycleScope.launch {
-//            repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                launch {
-//                    viewModel.baseUserProfile.collect { response ->
-//                        when (response) {
-//                            is Resource.Success -> {
-//                                val baseUserProfile = response.data
-//                                mineAccount.text = baseUserProfile.account
-//                                Glide.with(this@MineFragment)
-//                                    .load(baseUserProfile.avatarUrl)
-//                                    .into(mineAvatar)
-//                            }
-//
-//                            is Resource.Error -> {
-//                                CustomToast.showMessage(
-//                                    requireContext(),
-//                                    "出错啦, ${response.message} + ${MainApplication.token}"
-//                                )
-//                            }
-//
-//                            else -> {}
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
+    private fun setupClickListeners() {
+        // 编辑按钮点击事件
+        binding.btnEdit.setOnClickListener {
+            Route.goPersonProfile(requireActivity())
+        }
+
+        // 头像点击事件
+        binding.ivProfile.setOnClickListener {
+            // TODO: 实现头像选择功能
+        }
+
+        // 升级计划按钮点击事件
+        binding.btnUpgrade.setOnClickListener {
+            // TODO: 跳转到升级计划页面
+        }
+
+        // 人脸识别开关事件
+        binding.switchFaceRecognition.setOnCheckedChangeListener { _, isChecked ->
+            // TODO: 处理人脸识别开关状态
+        }
+
+        // 更改密码点击事件
+        binding.layoutChangePassword.setOnClickListener {
+            // TODO: 跳转到更改密码页面
+        }
+
+        // 法律和政策点击事件
+        binding.layoutLegalPolicy.setOnClickListener {
+            // TODO: 跳转到法律和政策页面
+        }
+
+        // 通知设置点击事件
+        binding.layoutNotification.setOnClickListener {
+            // TODO: 跳转到通知设置页面
+        }
+
+        // 语言设置点击事件
+        binding.layoutLanguage.setOnClickListener {
+            // TODO: 跳转到语言设置页面
+        }
+    }
+
+    private fun observeUserInfo() {
+        lifecycleScope.launch {
+            viewModel.userProfile.collectLatest { response ->
+                when (response) {
+                    is Resource.Success -> {
+                        updateUI(response.data)
+                    }
+                    is Resource.Error -> {
+                        // TODO: 显示错误提示
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun updateUI(userProfile: UserProfile) {
+        // 更新头像
+        Glide.with(this)
+            .load(userProfile.avatarUrl)
+            .circleCrop()
+            .into(binding.ivProfile)
+
+        // 更新用户名
+        binding.tvUserName.text = userProfile.account
+
+    }
 
     companion object {
         /**

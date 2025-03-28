@@ -13,6 +13,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dcelysia.outsourceserviceproject.Model.data.response.VoiceItem
 import com.dcelysia.outsourceserviceproject.R
+import com.dcelysia.outsourceserviceproject.ViewModel.PersonProfileViewModel
 import com.dcelysia.outsourceserviceproject.adapter.RecommendedVoiceAdapter
 import com.dcelysia.outsourceserviceproject.databinding.FragmentHomeBinding
 
@@ -24,7 +25,7 @@ class HomeFragment : Fragment() {
     private val handler = Handler(Looper.getMainLooper())
     private var progressUpdateRunnable: Runnable? = null
     private var currentPlayingPosition: Int = -1
-
+    private val personProfileViewModel = PersonProfileViewModel()
 
     private val mediaPlayer: MediaPlayer by lazy { MediaPlayer() }
     override fun onCreateView(
@@ -42,6 +43,7 @@ class HomeFragment : Fragment() {
         setupFeatureCards()
         setupPremiumPlan()
         setupRecommendedVoices()
+        personProfileViewModel.loadUserProfile()
     }
 
     private fun setupUserInfo() {
