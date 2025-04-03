@@ -15,7 +15,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.dcelysia.outsourceserviceproject.Model.Room.database.AudioDetailDatabase
 import com.dcelysia.outsourceserviceproject.Model.Room.database.VoiceModelDataBase
+import com.dcelysia.outsourceserviceproject.Model.Room.entity.AudioDetailEntity
 import com.dcelysia.outsourceserviceproject.Model.Room.entity.VoiceModelEntity
 import com.dcelysia.outsourceserviceproject.R
 import com.dcelysia.outsourceserviceproject.UI.CustomToast
@@ -31,6 +33,9 @@ import java.util.concurrent.TimeUnit
 class VoiceSynthesisFragment : Fragment() {
 
     private lateinit var binding: FragmentVoiceSynthesisBinding
+    private val audioDetailDatabase by lazy {
+        AudioDetailDatabase.getInstance(requireContext())
+    }
 
     private val speechRates = arrayOf(
         0.5f,
@@ -215,7 +220,7 @@ class VoiceSynthesisFragment : Fragment() {
                             requireActivity().runOnUiThread {
                                 hideLoadingDialog()
                                 this@VoiceSynthesisFragment.audioFilePath = audioFilePath
-
+                                saveAudioToDatabase(audioFilePath)
                                 binding.loadingProgressBar.visibility = View.GONE
                                 binding.synthesizeButton.isEnabled = true
                                 playLayout.visibility = View.VISIBLE
@@ -464,5 +469,39 @@ class VoiceSynthesisFragment : Fragment() {
         releaseMediaPlayer()
         webSocket.cancel()
         hideLoadingDialog()
+    }
+
+    private fun saveAudioToDatabase(audioFilePath: String) {
+        val text = binding.textInputEditText.text.toString().trim()
+        if (text.isEmpty()) {
+            return
+        }
+
+        val modelName = binding.voiceModelChosen.text.toString()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val audioDetail = AudioDetailEntity(
+                    title = if (text.length > 6) text.substring(
+                        0,
+                        10
+                    ) + "..." else text,
+                    audioPicture = "",
+                    content = if (text.length > 50) text.substring(0, 50) + "..." else text,
+                    audioUrl = audioFilePath,
+                    modelName = modelName
+                )
+
+                audioDetailDatabase.viewItemDao().insertModelItem(audioDetail)
+
+                withContext(Dispatchers.Main) {
+                    CustomToast.showMessage(requireContext(), "语音已保存")
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    CustomToast.showMessage(requireContext(), "保存失败: ${e.message}")
+                }
+            }
+        }
     }
 }

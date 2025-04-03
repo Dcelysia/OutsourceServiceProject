@@ -6,22 +6,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.dcelysia.outsourceserviceproject.Model.Room.database.AudioDetailDatabase
+import com.dcelysia.outsourceserviceproject.Model.Room.entity.AudioDetailEntity
 import com.dcelysia.outsourceserviceproject.R
+import com.dcelysia.outsourceserviceproject.adapter.AudioAdapter
 import com.dcelysia.outsourceserviceproject.databinding.FragmentAlbumBinding
 import com.dcelysia.outsourceserviceproject.databinding.ItemSongBinding
 import com.google.android.material.appbar.AppBarLayout
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.abs
 
 class AlbumFragment : Fragment() {
 
-    private var _binding: FragmentAlbumBinding? = null
-    private val binding get() = _binding!!
+    private val binding by lazy { FragmentAlbumBinding.inflate(layoutInflater) }
 
-    private val songAdapter = SongAdapter()
+    // private val binding get() = _binding!!
+    private val recyclerView: RecyclerView by lazy { binding.rvSongList }
     private var album: Album? = null
+    private val songAdapter by lazy { SongAdapter() }
 
     companion object {
         private const val ARG_ALBUM_ID = "album_id"
@@ -40,14 +48,34 @@ class AlbumFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAlbumBinding.inflate(inflater, container, false)
+        //binding = FragmentAlbumBinding.inflate(inflater, container, false)
         return binding.root
     }
 
+    private val audioList: List<AudioDetailEntity> = listOf(
+    )
+
+    private fun initDatabase(){
+        AudioDetailDatabase.getInstance(requireContext()).viewItemDao().insertModelItem(AudioDetailEntity(
+            title = "超级柏明聪",
+            audioPicture = "",
+            content = "豫章故郡，洪都新府。星分翼轸(zhěn)，地接衡庐。襟三江而带五湖，控蛮荆而引瓯（ōu）越。物华天宝，龙光射牛斗之墟；人杰地灵，徐孺下陈蕃(fān)之榻。雄州雾列，俊采星驰，台隍(huáng)枕夷夏之交，宾主尽东南之美。都督阎公之雅望，棨(qǐ )戟遥临；宇文新州之懿(yì)范，襜(chān )帷(wéi)暂驻。十旬休假，胜友如云；千里逢迎，高朋满座。腾蛟起凤，孟学士之词宗；紫电清霜，王将军之武库。家君作宰，路出名区；童子何知，躬逢胜饯。",
+            audioUrl = "",
+            modelName = "胡桃"
+        ))
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initViews()
+        lifecycleScope.launch(Dispatchers.IO) {
+            initDatabase()
+            val database = AudioDetailDatabase.getInstance(requireContext())
+            val audioList = database.viewItemDao().getAllAudio()
+            withContext(Dispatchers.Main) {
+                recyclerView.adapter = AudioAdapter(audioList)
+                recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            }
+        }
         setupToolbar()
         setupListeners()
 
@@ -60,16 +88,15 @@ class AlbumFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 
-    private fun initViews() {
-        // 设置RecyclerView
-        binding.rvSongList.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = songAdapter
-        }
-    }
+//    private fun initViews() {
+//        // 设置RecyclerView
+//        binding.rvSongList.apply {
+//            layoutManager = LinearLayoutManager(context)
+//            adapter = songAdapter
+//        }
+//    }
 
     private fun setupToolbar() {
         // 设置标题透明度随滚动变化
@@ -91,6 +118,8 @@ class AlbumFragment : Fragment() {
         binding.btnPlayAll.setOnClickListener {
             Toast.makeText(context, "播放全部", Toast.LENGTH_SHORT).show()
         }
+
+
 
         // 收藏按钮点击事件
         binding.btnFavorite.setOnClickListener {
@@ -172,7 +201,8 @@ class AlbumFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-            val binding = ItemSongBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val binding =
+                ItemSongBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             return SongViewHolder(binding)
         }
 
@@ -183,7 +213,8 @@ class AlbumFragment : Fragment() {
 
         override fun getItemCount(): Int = songs.size
 
-        inner class SongViewHolder(private val binding: ItemSongBinding) : RecyclerView.ViewHolder(binding.root) {
+        inner class SongViewHolder(private val binding: ItemSongBinding) :
+            RecyclerView.ViewHolder(binding.root) {
 
             fun bind(song: Song, index: Int) {
                 binding.tvSongIndex.text = index.toString()
